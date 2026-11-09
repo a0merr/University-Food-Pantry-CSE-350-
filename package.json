@@ -1,0 +1,30 @@
+{
+  "name": "campus-food-pantry",
+  "version": "1.0.0",
+  "description": "Campus Food Pantry Platform - CSE 350 Group 15. Students request food discreetly; pantry staff run inventory and pickups.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node scripts/seed.js --reset",
+    "test": "node --test --test-reporter=spec \"tests/unit/**/*.test.js\" \"tests/integration/**/*.test.js\"",
+    "test:unit": "node --test --test-reporter=spec \"tests/unit/**/*.test.js\"",
+    "test:integration": "node --test --test-reporter=spec \"tests/integration/**/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"src/**\" \"tests/unit/**/*.test.js\" \"tests/integration/**/*.test.js\"",
+    "test:e2e": "playwright test",
+    "test:perf": "node tests/perf/load-test.js",
+    "test:all": "npm test && npm run test:e2e && npm run test:perf"
+  },
+  "dependencies": {
+    "express": "5.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "autocannon": "8.0.0"
+  },
+  "license": "MIT"
+}
