@@ -41,10 +41,11 @@ Tracked `.js`, `.html` and `.css` files total 3,381 lines.
 |---|---:|---:|
 | Claude Code foundation files | 360 | 10.6% |
 | ChatGPT-assisted, Abdullah: inventory route, inventory service, inventory tests, `src/auth/routes.js`, his 75 lines of `server.js` | 544 | 16.1% |
-| ChatGPT-assisted, Andrew: pickup, slot, notification, reminder, alert and report services; pickup and staff routes; staff page and scripts; their tests; his 15 lines of `server.js` | 2,477 | 73.3% |
-| **All AI-generated or AI-assisted** | **3,381** | **100%** |
+| **All AI-generated or AI-assisted** | **904** | **26.7%** |
 
-The ChatGPT rows count each file in full. That makes 100% an upper bound, because only parts of `src/auth/routes.js` and `server.js` were AI-assisted. Recount after the student page, sign-in page, styles and seed script are merged.
+The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row counts each file in full. That makes 26.7% an upper bound, because only parts of `src/auth/routes.js` and `server.js` were AI-assisted. Recount after the student page, sign-in page, styles and seed script are merged.
+
+**Correction (Nov 10, 2026):** an earlier version of this file listed Andrew's pickup, notification, alert and report code (FR5, FR6, FR8–FR10) and the staff page as ChatGPT-assisted. Andrew wrote that code by hand, so that entry was removed and the share recounted.
 
 ## Additional AI Assistance — Inventory and Security
 
@@ -62,24 +63,5 @@ The ChatGPT rows count each file in full. That makes 100% an upper bound, becaus
 | `src/auth/routes.js` | Login email normalization and login rate limiting |
 
 These contributions were implemented with ChatGPT assistance and tested locally. The existing shared foundation files were generated with Claude Code.
-
-## Additional AI Assistance — Pickups, Notifications, Alerts and Reports
-
-- **Tool:** ChatGPT (OpenAI)
-- **Date:** November 10, 2026
-- **Developer:** Andrew Merritt
-- **Features:** FR5 pickup times, FR6 cancellations, notifications and reminders, FR8 pickup fulfillment, FR9 low-stock alerts, FR10 usage report, and the staff page.
-
-| File | AI-assisted contribution |
-|---|---|
-| `src/services/slots.js`, `src/services/pickups.js` | Pickup slots, booking with limits and stock reservation, cancel, prepare, complete |
-| `src/services/notifications.js`, `src/services/reminders.js` | In-app notifications, email outbox, 24-hour reminders |
-| `src/services/alerts.js`, `src/services/reports.js` | Low-stock alerts and the anonymous usage report |
-| `src/routes/pickups.js`, `src/routes/staff.js` | Student and staff pickup API routes |
-| `server.js` | Mounting the pickup and staff routers, static pages, hourly reminder job |
-| `public/staff.html`, `public/js/staff-pickups.js`, `public/js/staff-reports.js`, `public/js/student-pickup.js` | Staff page and the staff and student pickup scripts |
-| `tests/unit/` (alerts, notifications, pickup-routes, pickups, reminders, reports, slots, staff-reports-ui, staff-routes, staff-ui, student-pickup-ui), `tests/integration/staff-flow.test.js` | Unit and integration tests for the above |
-
-These contributions were implemented with ChatGPT assistance and tested locally (`npm test`: 30 passing on Nov 10).
 
 The AI-generated code percentage should be recalculated when the full project is complete.
