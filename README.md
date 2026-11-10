@@ -2,7 +2,21 @@
 
 CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
 
-> **Status (Nov 9, 2026):** only the shared foundation is in the repo (database schema and helper modules). The server, API, pages and tests are being built this week. The Development Demo is due **Fri, Nov 13**.
+> **Status (Nov 10, 2026):** merged into `main` so far:
+> - Accounts and security (FR1, NFR1)
+> - Inventory and donations (FR7)
+> - Pickup times, cancellations and notifications (FR5, FR6)
+> - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
+>
+> `npm test`: 29 passing.
+>
+> Still to come:
+> - Sign-in page and student page: browse, search and request (FR2–FR4)
+> - Styles and the seed script
+> - Integration, browser, accessibility and load tests
+> - Render deploy
+>
+> The Development Demo is due **Fri, Nov 13**.
 
 ## Team
 
@@ -31,7 +45,8 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
    cd University-Food-Pantry-CSE-350-
    npm install
    ```
-3. For browser tests, install Chromium once: `npx playwright install chromium`
+3. Create the database folder once: `mkdir data`. The server doesn't create it yet, so `npm start` crashes on a fresh clone without it.
+4. For browser tests, install Chromium once: `npx playwright install chromium`
 
 Node may print an `ExperimentalWarning` for `node:sqlite`. That is expected.
 
@@ -54,27 +69,43 @@ These are defined in `package.json`. Each one works as soon as the file it runs 
 ## Project structure
 
 ```
-server.js            starts the web server and the reminder job
-scripts/seed.js      demo accounts, items and pickup times
+server.js              Express app: JSON, static pages, CSRF check, routers, error handler, hourly reminder job
 src/
-  db.js              database schema, openDatabase(), transaction()      [done]
-  lib/               errors.js, validate.js, time.js                      [done]
-  auth/              passwords.js [done]; sessions, middleware, rate limit
-  middleware/        security headers, CSRF check, error handler
-  services/          the pantry rules: accounts, inventory, requests, slots, notifications, alerts, reports
-  routes/            thin Express routers, one file per owner
-  app.js             builds the Express app and mounts the routers
+  db.js                database schema, openDatabase(), transaction()
+  lib/                 errors.js, validate.js, time.js
+  auth/                passwords.js (hashing); routes.js (register, login with rate limit, logout, /me)
+  routes/              inventory.js (Abdullah); pickups.js and staff.js (Andrew)
+  services/            inventory, slots, pickups, notifications, reminders, alerts, reports
 public/
-  index.html         sign in and create account
-  student.html       browse food, request items, choose a pickup time
-  staff.html         inventory, donations, pickup queue, alerts, usage report
-  css/styles.css
-  js/                api.js and ui.js [done]; one script per page section
+  staff.html           pickup queue, pickup times, low-stock alerts, usage report
+  js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
 tests/
-  unit/  integration/  e2e/  perf/
+  unit/                one test file per service, router or page script
 docs/
-  AI_USAGE.md        AI-generated code disclosure
+  AI_USAGE.md          AI-generated code disclosure
 ```
+
+Not added yet: `public/index.html` (sign in), `public/student.html`, `public/css/styles.css`, `scripts/seed.js`, `tests/integration/`, `tests/e2e/`, `tests/perf/`.
+
+## API
+
+Every route is under `/api`. A `POST`, `PATCH` or `DELETE` needs the `X-Requested-With: fetch` header, which `api()` adds.
+
+| Method and path | Who | What it does | Owner |
+| --- | --- | --- | --- |
+| `GET /health` | anyone | Server check | Abdullah |
+| `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | anyone / signed in | Accounts and sessions | Abdullah |
+| `GET /items` | anyone | Item list with stock | Abdullah |
+| `POST /items`, `PATCH /items/:id`, `POST /donations` | staff | Add items, change quantity, log donations | Abdullah |
+| `GET /pickup-slots` | signed in | Pickup times with open spots | Andrew |
+| `POST /pickups` | student | Body `{ slot_id, items: [{ item_id, quantity }] }`. Checks the visit and per-item limits, reserves stock, books the time and sends a "scheduled" notification | Andrew |
+| `GET /pickups/:id`, `POST /pickups/:id/cancel` | owner or staff | View or cancel a pickup; cancel releases reserved stock | Andrew |
+| `GET /notifications`, `PATCH /notifications/:id/read` | signed in | Own notifications; `?unread=true` filters | Andrew |
+| `GET /staff/pickups` | staff | Pickup queue; `?date=YYYY-MM-DD`, `?status=` | Andrew |
+| `POST /staff/pickups/:id/prepare`, `POST /staff/pickups/:id/complete` | staff | Mark ready (sends "ready"), mark picked up | Andrew |
+| `GET /staff/slots`, `POST /staff/slots`, `PATCH /staff/slots/:id`, `DELETE /staff/slots/:id` | staff | Manage pickup times | Andrew |
+| `GET /staff/alerts`, `POST /staff/alerts/check` | staff | Open low-stock alerts; re-check stock now | Andrew |
+| `GET /staff/reports` | staff | Usage totals, no student names; `?from=` and `?to=` dates | Andrew |
 
 ## How we work
 
@@ -90,7 +121,7 @@ docs/
 
 ## AI-generated code
 
-The assignment requires us to disclose AI-generated code, and we keep it at about 10% of the project. The seven foundation files are AI-generated. Each starts with the comment `AI-generated (Claude Code) - see docs/AI_USAGE.md`, and [docs/AI_USAGE.md](docs/AI_USAGE.md) lists them. Everything else is written by the team. Do not paste AI output into team files; if you do use AI for anything, log it in `docs/AI_USAGE.md`.
+The assignment requires at least 10% AI-generated code and asks us to say where it is. The seven foundation files are AI-generated by Claude Code, and each starts with the comment `AI-generated (Claude Code) - see docs/AI_USAGE.md`. Parts of the inventory and security code were written with ChatGPT's help. [docs/AI_USAGE.md](docs/AI_USAGE.md) lists every file and the current AI share. If you use AI for anything, log it there.
 
 ## License
 

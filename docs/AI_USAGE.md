@@ -33,6 +33,18 @@ AI share = 360 / (total lines of source code) x 100%
 
 Count only `.js`, `.html` and `.css` source files, not `node_modules/` or `package-lock.json`. To stay at about 10%, the team-written code should come to roughly 3,000+ lines. If the team edits an AI-generated file substantially, note the change here.
 
+### Current count (Nov 10, 2026, after PR #5)
+
+Tracked `.js`, `.html` and `.css` files total 3,268 lines.
+
+| What is counted | Lines | Share |
+|---|---:|---:|
+| Claude Code foundation files | 360 | 11.0% |
+| ChatGPT-assisted files: inventory route, inventory service, inventory tests, `src/auth/routes.js`, Abdullah's 75 lines of `server.js` | 544 | 16.6% |
+| **All AI-generated or AI-assisted** | **904** | **27.7%** |
+
+The ChatGPT row counts each of those files in full. It is an upper bound, because only parts of `src/auth/routes.js` and `server.js` were AI-assisted. Recount after the student page, sign-in page, styles and seed script are merged.
+
 ## Additional AI Assistance — Inventory and Security
 
 - **Tool:** ChatGPT (OpenAI)
