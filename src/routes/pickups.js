@@ -77,6 +77,7 @@ export function pickupRoutes(db) {
       { user_id: req.user.id, role: req.user.role }
     );
     notifyCancelled({ db }, pickup);
+    checkLowStock({ db });
     res.json({ pickup });
   });
 
