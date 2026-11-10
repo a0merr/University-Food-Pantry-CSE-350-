@@ -2,10 +2,14 @@ import express from 'express';
 import { openDatabase } from './src/db.js';
 import { authRoutes } from './src/auth/routes.js';
 import { inventoryRoutes } from './src/routes/inventory.js';
+import { pickupRoutes } from './src/routes/pickups.js';
+import { staffRoutes } from './src/routes/staff.js';
+import { sendDueReminders } from './src/services/reminders.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(express.static('public'));
 
 const db = openDatabase('data/pantry.db');
 
@@ -49,6 +53,8 @@ app.use('/api', (req, res, next) => {
 
 app.use('/api/auth', authRoutes(db));
 app.use('/api', inventoryRoutes(db));
+app.use('/api', pickupRoutes(db));
+app.use('/api', staffRoutes(db));
 app.use((err, req, res, next) => {
   if (err.status && err.code) {
     return res.status(err.status).json({
@@ -69,6 +75,15 @@ app.use((err, req, res, next) => {
   });
 });
 const PORT = process.env.PORT || 3000;
+const REMINDER_INTERVAL_MS = 60 * 60 * 1000;
+
+setInterval(() => {
+  try {
+    sendDueReminders({ db });
+  } catch (err) {
+    console.error('Reminder job failed:', err);
+  }
+}, REMINDER_INTERVAL_MS).unref();
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
