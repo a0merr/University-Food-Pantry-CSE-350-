@@ -8,12 +8,12 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 > - Pickup times, cancellations and notifications (FR5, FR6)
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
 >
-> `npm test`: 29 passing.
+> `npm test`: 30 passing (29 unit, 1 integration).
 >
 > Still to come:
 > - Sign-in page and student page: browse, search and request (FR2–FR4)
 > - Styles and the seed script
-> - Integration, browser, accessibility and load tests
+> - Browser, accessibility and load tests
 > - Render deploy
 >
 > The Development Demo is due **Fri, Nov 13**.
@@ -81,11 +81,12 @@ public/
   js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
 tests/
   unit/                one test file per service, router or page script
+  integration/         staff-flow.test.js: book, prepare, complete, report
 docs/
   AI_USAGE.md          AI-generated code disclosure
 ```
 
-Not added yet: `public/index.html` (sign in), `public/student.html`, `public/css/styles.css`, `scripts/seed.js`, `tests/integration/`, `tests/e2e/`, `tests/perf/`.
+Not added yet: `public/index.html` (sign in), `public/student.html`, `public/css/styles.css`, `scripts/seed.js`, `tests/e2e/`, `tests/perf/`.
 
 ## API
 
