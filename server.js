@@ -13,6 +13,40 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/api', (req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  const origin = req.get('Origin');
+
+  if (origin) {
+    try {
+      const expectedOrigin = new URL(
+        `${req.protocol}://${req.get('host')}`
+      ).origin;
+
+      if (new URL(origin).origin !== expectedOrigin) {
+        return res.status(403).json({
+          error: { message: 'Request origin not allowed.' }
+        });
+      }
+    } catch {
+      return res.status(403).json({
+        error: { message: 'Invalid request origin.' }
+      });
+    }
+  }
+
+  if (req.get('X-Requested-With') !== 'fetch') {
+    return res.status(403).json({
+      error: { message: 'Missing security header.' }
+    });
+  }
+
+  next();
+});
+
 app.use('/api/auth', authRoutes(db));
 app.use('/api', inventoryRoutes(db));
 app.use((err, req, res, next) => {
