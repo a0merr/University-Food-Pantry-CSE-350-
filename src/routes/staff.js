@@ -3,6 +3,7 @@ import { sha256 } from '../auth/passwords.js';
 import { badRequest, forbidden, unauthorized } from '../lib/errors.js';
 import { checkLowStock, listOpenAlerts } from '../services/alerts.js';
 import { complete, prepare, queue } from '../services/pickups.js';
+import { staffReport } from '../services/reports.js';
 import { createSlot, deleteSlot, listSlots, updateSlot } from '../services/slots.js';
 import { notifyReady } from '../services/notifications.js';
 
@@ -87,6 +88,10 @@ export function staffRoutes(db) {
 
   router.get('/staff/alerts', staffOnly, (req, res) => {
     res.json({ alerts: listOpenAlerts({ db }) });
+  });
+
+  router.get('/staff/reports', staffOnly, (req, res) => {
+    res.json({ report: staffReport({ db }, req.query) });
   });
 
   return router;

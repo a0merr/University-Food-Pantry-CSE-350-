@@ -9,6 +9,7 @@ import { sendDueReminders } from './src/services/reminders.js';
 const app = express();
 
 app.use(express.json());
+app.use(express.static('public'));
 
 const db = openDatabase('data/pantry.db');
 

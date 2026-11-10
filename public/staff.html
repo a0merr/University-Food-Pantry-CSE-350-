@@ -172,7 +172,29 @@
       <div id="alert-message" aria-live="polite"></div>
       <div id="alert-list"></div>
     </section>
+
+    <section aria-labelledby="reports-title">
+      <h2 id="reports-title">Reports</h2>
+      <form id="reports-form">
+        <label>From
+          <input name="from" type="date">
+        </label>
+        <label>To
+          <input name="to" type="date">
+        </label>
+        <button type="submit">Run Report</button>
+      </form>
+      <div id="reports-message" aria-live="polite"></div>
+      <div id="reports-summary"></div>
+      <h3>Pickup Statuses</h3>
+      <div id="reports-statuses"></div>
+      <h3>Top Items</h3>
+      <div id="reports-top-items"></div>
+      <h3>Inventory by Category</h3>
+      <div id="reports-categories"></div>
+    </section>
   </main>
   <script type="module" src="/js/staff-pickups.js"></script>
+  <script type="module" src="/js/staff-reports.js"></script>
 </body>
 </html>
