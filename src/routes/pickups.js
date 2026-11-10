@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { sha256 } from '../auth/passwords.js';
 import { badRequest, forbidden, unauthorized } from '../lib/errors.js';
+import { checkLowStock } from '../services/alerts.js';
 import { cancel, getPickup, schedule } from '../services/pickups.js';
 import { listSlots } from '../services/slots.js';
 import { listNotifications, markRead, notifyCancelled, notifyScheduled } from '../services/notifications.js';
@@ -57,6 +58,7 @@ export function pickupRoutes(db) {
   router.post('/pickups', requireSignedIn, requireStudent, (req, res) => {
     const pickup = schedule({ db }, req.user.id, req.body ?? {});
     notifyScheduled({ db }, pickup);
+    checkLowStock({ db });
     res.status(201).json({ pickup });
   });
 
