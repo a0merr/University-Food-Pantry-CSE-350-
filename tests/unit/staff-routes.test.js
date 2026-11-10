@@ -46,8 +46,8 @@ function addStaffSession(db) {
 function addPickup(db) {
   const studentId = addUser(db, 'student', 'student@example.edu');
   const itemId = Number(db.prepare(`
-    INSERT INTO items (name, category, quantity, created_at, updated_at)
-    VALUES ('Rice', 'Grains', 10, '2026-11-10T09:00:00', '2026-11-10T09:00:00')
+    INSERT INTO items (name, category, quantity, low_stock_threshold, created_at, updated_at)
+    VALUES ('Rice', 'Grains', 10, 8, '2026-11-10T09:00:00', '2026-11-10T09:00:00')
   `).run().lastInsertRowid);
   const slotId = Number(db.prepare(`
     INSERT INTO pickup_slots (starts_at, capacity)
@@ -80,6 +80,7 @@ test('staff can prepare and complete a pickup through routes', async () => {
     assert.equal(prepareRes.status, 200);
     assert.equal(completeRes.status, 200);
     assert.equal(body.pickup.status, 'picked_up');
+    assert.equal(db.prepare('SELECT COUNT(*) AS count FROM low_stock_alerts WHERE resolved_at IS NULL').get().count, 1);
   } finally {
     server.close();
     db.close();

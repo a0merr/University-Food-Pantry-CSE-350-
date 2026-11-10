@@ -60,6 +60,7 @@ export function staffRoutes(db) {
 
   router.post('/staff/pickups/:id/complete', staffOnly, (req, res) => {
     const pickup = complete({ db }, parseId(req.params.id, 'pickup request ID'));
+    checkLowStock({ db });
     res.json({ pickup });
   });
 
