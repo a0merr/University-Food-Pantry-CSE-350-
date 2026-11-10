@@ -9,6 +9,29 @@ import {
 
 const SESSION_LENGTH = 7 * 24 * 60 * 60 * 1000;
 
+const LOGIN_WINDOW = 15 * 60 * 1000;
+const MAX_LOGIN_ATTEMPTS = 5;
+const loginAttempts = new Map();
+
+function checkLoginLimit(req, res, next) {
+  const ip = req.ip;
+  const now = Date.now();
+  const record = loginAttempts.get(ip);
+
+  if (record && now - record.startedAt < LOGIN_WINDOW) {
+    if (record.count >= MAX_LOGIN_ATTEMPTS) {
+      return res.status(429).json({
+        error: { message: 'Too many login attempts. Try again in 15 minutes.' }
+      });
+    }
+  } else {
+    loginAttempts.set(ip, { count: 0, startedAt: now });
+  }
+
+  next();
+}
+
+
 export function authRoutes(db) {
   const router = Router();
 
@@ -88,7 +111,7 @@ export function authRoutes(db) {
     });
   });
 
-  router.post('/login', (req, res) => {
+  router.post('/login', checkLoginLimit, (req, res) => {
     const { email, password } = req.body ?? {};
 
     if (typeof email !== 'string' || typeof password !== 'string' ||
@@ -100,16 +123,21 @@ export function authRoutes(db) {
 
     const user = db.prepare(
       'SELECT * FROM users WHERE email = ?'
-    ).get(email.trim());
+    ).get(email.trim().toLowerCase());
 
     const valid = verifyPassword(password, user?.password_hash ?? DUMMY_HASH);
 
     if (!user || !valid) {
+      const ip = req.ip;
+      const record = loginAttempts.get(ip);
+      if (record) record.count++;
+
       return res.status(401).json({
         error: { message: 'Incorrect email or password.' }
       });
     }
 
+    loginAttempts.delete(req.ip);
     startSession(res, user.id);
 
     res.json({
