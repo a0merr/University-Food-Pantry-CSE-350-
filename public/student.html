@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Pantry | University Food Pantry</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>University Food Pantry — Student Portal</h1>
+    <nav><a href="#browse">Browse food</a><a href="#pickup">Book pickup</a><a href="#notifications">Notifications</a><a href="/" id="sign-out">Sign out</a></nav>
+  </header>
+  <main>
+    <section id="browse" aria-labelledby="browse-title">
+      <h2 id="browse-title">Browse and request food</h2>
+      <p>Search the pantry and enter the quantity you would like for each item.</p>
+      <div class="toolbar">
+        <label for="student-search">Search items
+          <input id="student-search" type="search" placeholder="Search by item name" autocomplete="off">
+        </label>
+        <label for="student-category">Category
+          <select id="student-category"><option value="">All categories</option></select>
+        </label>
+      </div>
+      <p id="student-results-count" role="status" aria-live="polite"></p>
+      <form id="student-pickup-form">
+        <div id="student-item-list" aria-live="polite"></div>
+        <section id="pickup" aria-labelledby="pickup-title">
+          <h2 id="pickup-title">Choose a pickup time</h2>
+          <div id="student-slot-list"></div>
+          <button type="submit">Request items and book pickup</button>
+        </section>
+      </form>
+      <div id="student-pickup-message" aria-live="polite"></div>
+    </section>
+    <section id="notifications" aria-labelledby="notifications-title">
+      <h2 id="notifications-title">Notifications</h2>
+      <ul id="student-notifications"></ul>
+    </section>
+  </main>
+  <script type="module" src="/js/student-pickup.js"></script>
+  <script type="module" src="/js/signout.js"></script>
+</body>
+</html>
