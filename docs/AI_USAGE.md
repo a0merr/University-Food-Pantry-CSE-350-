@@ -49,17 +49,17 @@ The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row c
 
 ### Recount (Nov 12, 2026, after PRs #21, #22 and #23)
 
-Tracked `.js`, `.html` and `.css` files total 7,754 lines, including the tests (after Gavin's QA tests, PR #21; Mohamed's student page, PR #22; and Andrew's fixes).
+Tracked `.js`, `.html` and `.css` files total 7,756 lines, including the tests (after Gavin's QA tests, PR #21; Mohamed's student page, PR #22; and Andrew's fixes).
 
 | What is counted | Lines | Share |
 |---|---:|---:|
 | Claude Code foundation files | 360 | 4.6% |
-| Claude Code, Andrew, Nov 12: bug fixes, stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes (table below) | 434 | 5.6% |
+| Claude Code, Andrew, Nov 12: bug fixes, stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes (table below) | 436 | 5.6% |
 | Claude Code, Gavin, Nov 12: QA tests (section below) | 3,700 | 47.7% |
 | ChatGPT-assisted, Abdullah (same files as above) | 544 | 7.0% |
-| **All AI-generated or AI-assisted** | **5,038** | **65.0%** |
+| **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
 
-Claude Code code in total is 4,494 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
+Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
 
 ## Claude Code changes, November 12, 2026
 
@@ -82,6 +82,7 @@ Claude Code code in total is 4,494 lines (58.0%), so the at-least-10% requiremen
 | `public/js/staff-guard.js`, `public/staff.html` | 42 | Issue #19: the staff page re-checks the signed-in account on load and when the tab comes back into view, and explains when the browser is now signed in as a student (all tabs share one sign-in). Starts with the AI-generated marker comment |
 | `server.js`, `scripts/seed.js`, `src/lib/time.js`, `src/services/pickups.js` | 24 | Known bugs from Gavin's QA tests: the server and seed script default to the pantry's time zone (`America/New_York`; Render runs in UTC, which put pickup-time checks, reminders and report dates 5 hours off); unknown `/api` routes answer with a JSON 404; request bodies over 100 KB get 413 instead of 500; a pickup time skipped by daylight saving is rejected; the queue's date filter includes 23:59:59 |
 | `tests/unit/time-and-queue.test.js` | 51 new | Tests for the queue date filter and the daylight-saving check |
+| `public/css/styles.css` | 2 | Student page: the form holding the item grid stacks, so the item cards fill the width instead of one narrow column |
 | `public/js/signout.js` | 2 | Catch a failed logout instead of leaving an unhandled rejection (found by Gavin's tests) |
 | `tests/unit/frontend-pages.test.js`, `tests/unit/edge-and-security.test.js`, `tests/integration/server-edge.test.js`, `tests/e2e/auth.spec.js` | 15 | After PRs #21 and #22 merged: the student-page tests use the real `student.html` and its new messages; the sign-out test expects no leaked error; five known-bug tests that now pass lose their `todo`; the DST tests pin the US Eastern time zone |
 

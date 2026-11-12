@@ -205,6 +205,8 @@ main.narrow { width: min(420px, calc(100% - 32px)); }
 .metric strong { font-size: 1.5rem; }
 
 /* Student page: item cards and pickup times from student-pickup.js */
+/* The student form holds the item grid and pickup times, so it stacks instead of using the one-row form layout. */
+#student-pickup-form { display: block; }
 #student-item-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
