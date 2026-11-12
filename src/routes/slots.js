@@ -1,0 +1,2 @@
+const express=require('express'),s=require('../services/slots');
+module.exports=({db,clock,a})=>{const r=express.Router();r.get('/slots',a.requireUser,(req,res)=>res.json(s.list(db,clock,{staff:req.user.role==='staff'})));r.post('/slots',a.requireStaff,(req,res)=>res.status(201).json(s.create(db,req.body,clock)));r.delete('/slots/:id',a.requireStaff,(req,res)=>res.json(s.remove(db,req.params.id)));return r};

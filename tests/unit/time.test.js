@@ -1,0 +1,1 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{iso}=require('../../src/lib/compat');test('local ISO validator',()=>{assert.ok(Number.isFinite(iso('2030-01-01T10:00')));assert.throws(()=>iso('not a time'))});

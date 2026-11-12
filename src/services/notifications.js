@@ -1,125 +1,78 @@
-import { forbidden, notFound } from '../lib/errors.js';
-import { transaction } from '../db.js';
-import { formatSlot, toLocalIso, systemClock } from '../lib/time.js';
-import { requireId } from '../lib/validate.js';
+// FR6: notifications. Every message is stored in `notifications` (shown in the app)
+// and `email_outbox` (the development email provider). A real SMTP sender can later
+// read the outbox without changing any caller.
+const { fail } = require('../lib/compat');
 
-function nowIso(ctx) {
-  return toLocalIso((ctx.clock ?? systemClock).now());
+const DEFAULT_LEAD_MINUTES = 60;
+
+/** Stores one notification plus its email. Does not open a transaction, so callers can wrap it. */
+function notify(db, userId, type, message, clock, { requestId = null, subject = `Pantry: ${type}` } = {}) {
+  const now = clock.now();
+  db.prepare('INSERT INTO notifications(user_id,request_id,type,message,created_at) VALUES(?,?,?,?,?)').run(userId, requestId, type, message, now);
+  const user = db.prepare('SELECT email FROM users WHERE id=?').get(userId);
+  if (user) db.prepare('INSERT INTO email_outbox(user_id,email,subject,body,created_at) VALUES(?,?,?,?,?)').run(userId, user.email, subject, message, now);
 }
 
-function insertOutbox(ctx, { user_id, subject, body }) {
-  ctx.db.prepare(`
-    INSERT INTO email_outbox (user_id, subject, body, created_at)
-    VALUES (?, ?, ?, ?)
-  `).run(user_id, subject, body, nowIso(ctx));
+function list(db, userId, { unreadOnly = false, limit = 50 } = {}) {
+  const rows = db
+    .prepare(
+      `SELECT id, request_id, type, message, read, created_at
+         FROM notifications
+        WHERE user_id = ? ${unreadOnly ? 'AND read = 0' : ''}
+        ORDER BY created_at DESC, id DESC
+        LIMIT ?`,
+    )
+    .all(userId, Math.min(Math.max(Number(limit) || 50, 1), 200));
+  return rows.map((r) => ({ id: r.id, requestId: r.request_id, type: r.type, message: r.message, read: r.read === 1, createdAt: r.created_at }));
 }
 
-export function createNotification(ctx, data) {
-  const userId = requireId(data.user_id, 'User ID');
-  const requestId = data.request_id == null ? null : requireId(data.request_id, 'Pickup request ID');
-  const type = String(data.type ?? '');
-  const message = String(data.message ?? '').trim();
+function unreadCount(db, userId) {
+  return db.prepare('SELECT COUNT(*) AS n FROM notifications WHERE user_id=? AND read=0').get(userId).n;
+}
 
-  if (!['scheduled', 'ready', 'reminder', 'cancelled'].includes(type)) {
-    throw new Error('Unsupported notification type.');
-  }
+/** Marks one of the user's own notifications as read. Other people's IDs look like "not found". */
+function markRead(db, nId, userId) {
+  const result = db.prepare('UPDATE notifications SET read=1 WHERE id=? AND user_id=?').run(nId, userId);
+  if (result.changes === 0) fail(404, 'not_found', 'Notification not found');
+  return { ok: true };
+}
 
-  if (!message) {
-    throw new Error('Notification message is required.');
-  }
+function markAllRead(db, userId) {
+  return { updated: db.prepare('UPDATE notifications SET read=1 WHERE user_id=? AND read=0').run(userId).changes };
+}
 
-  return transaction(ctx.db, () => {
-    const result = ctx.db.prepare(`
-      INSERT INTO notifications (user_id, request_id, type, message, created_at)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(userId, requestId, type, message, nowIso(ctx));
-
-    if (data.subject || data.email_body) {
-      insertOutbox(ctx, {
-        user_id: userId,
-        subject: data.subject ?? 'Campus Food Pantry update',
-        body: data.email_body ?? message
+/**
+ * Sends one reminder to every student whose pickup starts within `leadMinutes`
+ * and who has not been reminded yet. Safe to call as often as you like.
+ * Returns how many reminders were sent.
+ */
+function sendDueReminders(db, clock, { leadMinutes = DEFAULT_LEAD_MINUTES } = {}) {
+  const now = clock.now();
+  const until = now + leadMinutes * 60 * 1000;
+  return db.transaction(() => {
+    const due = db
+      .prepare(
+        `SELECT r.id, r.student_id, s.starts_at
+           FROM requests r
+           JOIN slots s ON s.id = r.slot_id
+          WHERE r.status IN ('scheduled', 'prepared')
+            AND r.reminder_sent = 0
+            AND s.starts_at > ? AND s.starts_at <= ?`,
+      )
+      .all(now, until);
+    let sent = 0;
+    for (const row of due) {
+      // The flag is flipped first, so two overlapping runs cannot both send.
+      const claimed = db.prepare('UPDATE requests SET reminder_sent=1 WHERE id=? AND reminder_sent=0').run(row.id);
+      if (claimed.changes === 0) continue;
+      notify(db, row.student_id, 'reminder', `Reminder: your pantry pickup is at ${new Date(row.starts_at).toLocaleString()}.`, clock, {
+        requestId: row.id,
+        subject: 'Pantry pickup reminder',
       });
+      sent += 1;
     }
-
-    return ctx.db.prepare('SELECT * FROM notifications WHERE id = ?')
-      .get(Number(result.lastInsertRowid));
+    return sent;
   });
 }
 
-export function listNotifications(ctx, userId, filters = {}) {
-  const cleanUserId = requireId(userId, 'User ID');
-  const where = ['user_id = ?'];
-  const params = [cleanUserId];
-
-  if (filters.unread_only) {
-    where.push('read_at IS NULL');
-  }
-
-  return ctx.db.prepare(`
-    SELECT *
-    FROM notifications
-    WHERE ${where.join(' AND ')}
-    ORDER BY created_at DESC, id DESC
-  `).all(...params);
-}
-
-export function markRead(ctx, userId, notificationId) {
-  const cleanUserId = requireId(userId, 'User ID');
-  const cleanNotificationId = requireId(notificationId, 'Notification ID');
-  const notification = ctx.db.prepare(`
-    SELECT *
-    FROM notifications
-    WHERE id = ?
-  `).get(cleanNotificationId);
-
-  if (!notification) {
-    throw notFound('Notification not found.');
-  }
-
-  if (notification.user_id !== cleanUserId) {
-    throw forbidden('You cannot update this notification.');
-  }
-
-  ctx.db.prepare(`
-    UPDATE notifications
-    SET read_at = COALESCE(read_at, ?)
-    WHERE id = ?
-  `).run(nowIso(ctx), cleanNotificationId);
-
-  return ctx.db.prepare('SELECT * FROM notifications WHERE id = ?')
-    .get(cleanNotificationId);
-}
-
-export function notifyScheduled(ctx, pickup) {
-  return createNotification(ctx, {
-    user_id: pickup.student_id,
-    request_id: pickup.id,
-    type: 'scheduled',
-    message: `Your pantry pickup is scheduled for ${formatSlot(pickup.starts_at)}.`,
-    subject: 'Pickup scheduled',
-    email_body: `Your pantry pickup is scheduled for ${formatSlot(pickup.starts_at)}.`
-  });
-}
-
-export function notifyReady(ctx, pickup) {
-  return createNotification(ctx, {
-    user_id: pickup.student_id,
-    request_id: pickup.id,
-    type: 'ready',
-    message: 'Your pantry pickup is ready.',
-    subject: 'Pickup ready',
-    email_body: 'Your pantry pickup is ready.'
-  });
-}
-
-export function notifyCancelled(ctx, pickup) {
-  return createNotification(ctx, {
-    user_id: pickup.student_id,
-    request_id: pickup.id,
-    type: 'cancelled',
-    message: 'Your pantry pickup was cancelled.',
-    subject: 'Pickup cancelled',
-    email_body: 'Your pantry pickup was cancelled.'
-  });
-}
+module.exports = { notify, list, unreadCount, markRead, markAllRead, sendDueReminders, DEFAULT_LEAD_MINUTES };

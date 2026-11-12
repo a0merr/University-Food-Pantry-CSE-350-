@@ -1,0 +1,3 @@
+const sessions=require('./sessions'); const {fail}=require('../lib/compat');
+function middleware(db,clock){return {loadUser:(req,res,next)=>{req.user=sessions.get(db,req.cookies?.sid,clock);next()},requireUser:(req,res,next)=>{if(!req.user)fail(401,'unauthorized','Please sign in');next()},requireStaff:(req,res,next)=>{if(!req.user)fail(401,'unauthorized','Please sign in');if(req.user.role!=='staff')fail(403,'forbidden','Staff access only');next()},requireStudent:(req,res,next)=>{if(!req.user)fail(401,'unauthorized','Please sign in');if(req.user.role!=='student')fail(403,'forbidden','Student access only');next()}}}
+module.exports=middleware;

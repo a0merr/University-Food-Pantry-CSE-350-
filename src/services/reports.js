@@ -1,106 +1,70 @@
-import { parseLocalDate } from '../lib/time.js';
-import { badRequest } from '../lib/errors.js';
+// FR10: aggregate usage report for staff. Counts only — no student emails or IDs,
+// so the report can be shared without exposing who used the pantry.
+const { iso } = require("../lib/compat");
 
-function normalizeDate(value, label) {
-  if (!value) return null;
-  if (!parseLocalDate(value)) {
-    throw badRequest(`${label} must be a valid date.`);
-  }
-  return String(value);
+const DAY = 24 * 60 * 60 * 1000;
+
+function range(query, clock) {
+  const to = query.to ? iso(query.to) : clock.now();
+  const from = query.from ? iso(query.from) : to - 30 * DAY;
+  if (from > to) return { from: to, to: from };
+  return { from, to };
 }
 
-function dateFilters(filters = {}) {
-  const from = normalizeDate(filters.from, 'From date');
-  const to = normalizeDate(filters.to, 'To date');
-  const where = [];
-  const params = [];
-
-  if (from) {
-    where.push('requests.created_at >= ?');
-    params.push(`${from}T00:00:00`);
-  }
-
-  if (to) {
-    where.push('requests.created_at <= ?');
-    params.push(`${to}T23:59:59`);
-  }
-
-  return { where, params };
-}
-
-export function pickupReport(ctx, filters = {}) {
-  const { where, params } = dateFilters(filters);
-  const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
-
-  const statusCounts = ctx.db.prepare(`
-    SELECT status, COUNT(*) AS count
-    FROM requests
-    ${whereSql}
-    GROUP BY status
-    ORDER BY status
-  `).all(...params);
-
-  const dailyPickups = ctx.db.prepare(`
-    SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS count
-    FROM requests
-    ${whereSql}
-    GROUP BY day
-    ORDER BY day
-  `).all(...params);
-
-  const itemTotals = ctx.db.prepare(`
-    SELECT
-      items.id AS item_id,
-      items.name,
-      SUM(request_items.quantity) AS quantity
-    FROM request_items
-    JOIN requests ON requests.id = request_items.request_id
-    JOIN items ON items.id = request_items.item_id
-    ${whereSql}
-    GROUP BY items.id
-    ORDER BY quantity DESC, items.name
-    LIMIT 10
-  `).all(...params);
-
+function summary(db, query, clock) {
+  const { from, to } = range(query, clock);
+  const one = (sql) => db.prepare(sql).get(from, to);
+  const requests = one(`SELECT COUNT(*) AS total,
+      SUM(status='picked_up') AS picked_up,
+      SUM(status='cancelled') AS cancelled,
+      SUM(status IN ('submitted','scheduled','prepared')) AS open
+    FROM requests WHERE created_at BETWEEN ? AND ?`);
+  const items = one(`SELECT COALESCE(SUM(ri.quantity),0) AS units
+    FROM request_items ri JOIN requests r ON r.id=ri.request_id
+    WHERE r.status='picked_up' AND r.created_at BETWEEN ? AND ?`);
+  const donations = one(
+    `SELECT COUNT(*) AS count, COALESCE(SUM(quantity),0) AS units FROM donations WHERE created_at BETWEEN ? AND ?`,
+  );
+  const students = one(
+    `SELECT COUNT(DISTINCT student_id) AS n FROM requests WHERE created_at BETWEEN ? AND ?`,
+  );
+  const byCategory = db
+    .prepare(
+      `SELECT i.category, SUM(ri.quantity) AS units, COUNT(DISTINCT r.student_id) AS students
+    FROM request_items ri JOIN requests r ON r.id=ri.request_id JOIN items i ON i.id=ri.item_id
+    WHERE r.status='picked_up' AND r.created_at BETWEEN ? AND ?
+    GROUP BY i.category ORDER BY units DESC`,
+    )
+    .all(from, to)
+    .map((x) => ({
+      category: x.category,
+      units: x.units,
+      students: x.students,
+    }));
+  const byItem = db
+    .prepare(
+      `SELECT i.name, i.category, SUM(ri.quantity) AS units
+    FROM request_items ri JOIN requests r ON r.id=ri.request_id JOIN items i ON i.id=ri.item_id
+    WHERE r.status='picked_up' AND r.created_at BETWEEN ? AND ?
+    GROUP BY i.id ORDER BY units DESC LIMIT 10`,
+    )
+    .all(from, to)
+    .map((x) => ({ name: x.name, category: x.category, units: x.units }));
   return {
-    status_counts: statusCounts,
-    daily_pickups: dailyPickups,
-    top_items: itemTotals
+    from: new Date(from).toISOString(),
+    to: new Date(to).toISOString(),
+    requests: {
+      total: requests.total || 0,
+      pickedUp: requests.picked_up || 0,
+      cancelled: requests.cancelled || 0,
+      open: requests.open || 0,
+    },
+    studentsServed: students.n || 0,
+    unitsDistributed: items.units || 0,
+    donations: { count: donations.count || 0, units: donations.units || 0 },
+    byCategory,
+    topItems: byItem,
   };
 }
 
-export function inventoryReport(ctx) {
-  const summary = ctx.db.prepare(`
-    SELECT
-      COUNT(*) AS active_items,
-      COALESCE(SUM(quantity), 0) AS total_quantity,
-      COALESCE(SUM(reserved), 0) AS total_reserved,
-      COALESCE(SUM(quantity - reserved), 0) AS total_available,
-      SUM(CASE WHEN quantity - reserved <= low_stock_threshold THEN 1 ELSE 0 END) AS low_stock_items
-    FROM items
-    WHERE active = 1
-  `).get();
-
-  const categories = ctx.db.prepare(`
-    SELECT
-      category,
-      COUNT(*) AS item_count,
-      COALESCE(SUM(quantity - reserved), 0) AS available
-    FROM items
-    WHERE active = 1
-    GROUP BY category
-    ORDER BY category
-  `).all();
-
-  return {
-    summary,
-    categories
-  };
-}
-
-export function staffReport(ctx, filters = {}) {
-  return {
-    pickups: pickupReport(ctx, filters),
-    inventory: inventoryReport(ctx)
-  };
-}
+module.exports = { summary, range };

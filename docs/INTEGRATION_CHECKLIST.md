@@ -1,0 +1,13 @@
+# Integration checklist
+- [ ] Review existing `src/db.js` and decide whether to adapt it or use `src/db-adapter.js`.
+- [ ] Inspect `package.json` and merge npm scripts; do not overwrite team settings.
+- [ ] Verify existing `src/auth/passwords.js` behavior versus new `src/services/users.js` scrypt implementation.
+- [ ] Verify original `api.js`/`ui.js` expectations against new frontend.
+- [ ] Confirm local-time handling and DST for pickup slots (currently interpreted using server local time).
+- [ ] Seed only fake demo accounts; never expose example passwords outside local testing.
+- [ ] Run tests and record actual pass/fail results rather than claiming passes in advance.
+- [ ] Add explicit coverage for concurrency, CSRF header security assumptions, accessibility on authenticated pages, and 200-user throughput.
+- [ ] Conduct manual WCAG 2.1 AA keyboard and screen-reader checks.
+- [ ] Review email-outbox privacy/data retention.
+- [ ] Verify application performance and fix faults before deployment.
+- [ ] Preserve `.gitignore` entries for `node_modules/`, `.env`, `data/`.

@@ -1,0 +1,1 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{hashPassword,verifyPassword}=require('../../src/services/users');test('password hashes authenticate correctly',()=>{const hash=hashPassword('correct horse');assert.equal(verifyPassword('correct horse',hash),true);assert.equal(verifyPassword('wrong',hash),false)});

@@ -1,0 +1,2 @@
+const express=require('express'),s=require('../services/inventory');
+module.exports=({db,clock,a})=>{const r=express.Router();r.get('/items',a.requireUser,(req,res)=>res.json(s.list(db,req.user.role==='staff')));r.post('/items',a.requireStaff,(req,res)=>res.status(201).json(s.create(db,req.body,clock)));r.patch('/items/:id',a.requireStaff,(req,res)=>res.json(s.update(db,req.params.id,req.body,clock)));return r};

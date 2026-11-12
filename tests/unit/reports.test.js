@@ -1,68 +1,39 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),{fixture}=require('../helpers');
+const inv=require('../../src/services/inventory'),req=require('../../src/services/requests'),slots=require('../../src/services/slots'),reports=require('../../src/services/reports');
 
-import { openDatabase } from '../../src/db.js';
-import { schedule, prepare, complete } from '../../src/services/pickups.js';
-import { staffReport } from '../../src/services/reports.js';
-
-function addUser(db, role, email) {
-  return Number(db.prepare(`
-    INSERT INTO users (email, name, password_hash, role, created_at)
-    VALUES (?, 'User', 'hash', ?, '2026-11-10T09:00:00')
-  `).run(email, role).lastInsertRowid);
-}
-
-function addItem(db) {
-  return Number(db.prepare(`
-    INSERT INTO items
-    (name, category, quantity, low_stock_threshold, created_at, updated_at)
-    VALUES ('Rice', 'Grains', 10, 2, '2026-11-10T09:00:00', '2026-11-10T09:00:00')
-  `).run().lastInsertRowid);
-}
-
-function addSlot(db) {
-  return Number(db.prepare(`
-    INSERT INTO pickup_slots (starts_at, capacity)
-    VALUES ('2099-11-10T14:00:00', 2)
-  `).run().lastInsertRowid);
-}
-
-test('staffReport summarizes pickup statuses, top items, and inventory', () => {
-  const db = openDatabase();
-
-  try {
-    const studentId = addUser(db, 'student', 'student@example.edu');
-    const itemId = addItem(db);
-    const slotId = addSlot(db);
-    const pickup = schedule(
-      { db },
-      studentId,
-      { slot_id: slotId, items: [{ item_id: itemId, quantity: 3 }] }
-    );
-    prepare({ db }, pickup.id);
-    complete({ db }, pickup.id);
-
-    const report = staffReport({ db }, { from: '2026-11-10', to: '2099-12-31' });
-
-    assert.equal(report.pickups.status_counts.find(row => row.status === 'picked_up').count, 1);
-    assert.equal(report.pickups.top_items[0].name, 'Rice');
-    assert.equal(report.pickups.top_items[0].quantity, 3);
-    assert.equal(report.inventory.summary.active_items, 1);
-    assert.equal(report.inventory.summary.total_available, 7);
-  } finally {
-    db.close();
-  }
+test('FR10: usage report counts pickups, units and students without identifying them',()=>{
+  const f=fixture();
+  try{
+    f.db.prepare('INSERT INTO users(email,password_hash,role) VALUES(?,?,?)').run('s2@test.edu','x','student');
+    const rice=inv.create(f.db,{name:'Rice',category:'Food',quantity:10},f.clock);
+    const soap=inv.create(f.db,{name:'Soap',category:'Hygiene',quantity:10},f.clock);
+    const slot=slots.create(f.db,{starts_at:'2030-01-02T10:00',capacity:4},f.clock);
+    const a=req.create(f.db,2,[{item_id:rice.id,quantity:2}],f.clock);
+    req.schedule(f.db,a.id,2,slot.id,f.clock);req.markPrepared(f.db,a.id,f.clock);req.markPickedUp(f.db,a.id,f.clock);
+    const b=req.create(f.db,3,[{item_id:soap.id,quantity:1}],f.clock);
+    req.cancel(f.db,b.id,{id:3,role:'student'},f.clock);
+    const r=reports.summary(f.db,{},f.clock);
+    assert.equal(r.requests.total,2);
+    assert.equal(r.requests.pickedUp,1);
+    assert.equal(r.requests.cancelled,1);
+    assert.equal(r.studentsServed,2);
+    assert.equal(r.unitsDistributed,2);
+    assert.deepEqual(r.byCategory,[{category:'Food',units:2,students:1}]);
+    assert.equal(JSON.stringify(r).includes('@test.edu'),false,'no emails in the report');
+  }finally{f.close()}
 });
 
-test('staffReport rejects invalid date filters', () => {
-  const db = openDatabase();
-
-  try {
-    assert.throws(
-      () => staffReport({ db }, { from: '2026-99-10' }),
-      /valid date/
-    );
-  } finally {
-    db.close();
-  }
+test('FR10: date range filters and reversed ranges are normalised',()=>{
+  const f=fixture();
+  try{
+    const item=inv.create(f.db,{name:'Rice',category:'Food',quantity:10},f.clock);
+    const slot=slots.create(f.db,{starts_at:'2030-01-02T10:00',capacity:4},f.clock);
+    const r=req.create(f.db,2,[{item_id:item.id,quantity:1}],f.clock);
+    req.schedule(f.db,r.id,2,slot.id,f.clock);req.markPrepared(f.db,r.id,f.clock);req.markPickedUp(f.db,r.id,f.clock);
+    const later=reports.summary(f.db,{from:'2030-02-01T00:00',to:'2030-03-01T00:00'},f.clock);
+    assert.equal(later.requests.total,0);
+    const reversed=reports.summary(f.db,{from:'2030-03-01T00:00',to:'2030-02-01T00:00'},f.clock);
+    assert.equal(reversed.requests.total,0);
+    assert.ok(reversed.from<reversed.to);
+  }finally{f.close()}
 });

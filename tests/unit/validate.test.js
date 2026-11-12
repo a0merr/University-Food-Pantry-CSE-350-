@@ -1,0 +1,1 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{id,positive}=require('../../src/lib/compat');test('positive id validator',()=>{assert.equal(id('3'),3);assert.throws(()=>positive(-1))});

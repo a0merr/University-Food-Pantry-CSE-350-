@@ -1,129 +1,32 @@
-# Campus Food Pantry Platform
+# Campus Food Pantry — CSE 350
 
-CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
+## Requirements
+Node.js 22.13+ (uses built-in `node:sqlite`; some versions show experimental warnings). `npm install` installs everything from `package.json` (express, plus `@playwright/test`, `@axe-core/playwright` and `autocannon` for the tests); then run `npx playwright install chromium` once for the browser tests.
 
-> **Status (Nov 10, 2026):** merged into `main` so far:
-> - Accounts and security (FR1, NFR1)
-> - Inventory and donations (FR7)
-> - Pickup times, cancellations and notifications (FR5, FR6)
-> - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
->
-> `npm test`: 30 passing (29 unit, 1 integration).
->
-> Still to come:
-> - Sign-in page and student page: browse, search and request (FR2–FR4)
-> - Styles and the seed script
-> - Browser, accessibility and load tests
-> - Render deploy
->
-> The Development Demo is due **Fri, Nov 13**.
+## Setup (local-only sample data)
+1. `npm install`
+2. `node scripts/seed.js --reset`
+3. `node server.js`
+4. Go to http://localhost:3000
 
-## Team
+Demo staff: `staff@pantry.test` / `DemoPass123!`. Demo students: `student1@pantry.test`, `student2@pantry.test`, `student3@pantry.test` / `DemoPass123!`.
 
-| Member | Role | Owns |
-| --- | --- | --- |
-| Abdullah Saadawi | Developer | FR1 accounts and roles, FR7 inventory and donations, NFR1 security, server setup, Render deploy |
-| Mohamed Muse | Developer | FR2 browse, FR3 search and filters, FR4 food requests, student page |
-| Andrew Merritt | Developer + PM | FR5 pickup times, FR6 cancellations and notifications, FR8 pickup fulfillment, FR9 low-stock alerts, FR10 usage report, staff page, deck and report |
-| Gavin Marvelle | QA lead | Test plan, test cases, browser, accessibility and load tests, bug tracking, test report |
+## Tests
+- `npm test` — unit + integration (`node --test tests/unit/*.test.js tests/integration/*.test.js`). The glob form works in PowerShell too; `node --test tests/unit tests/integration` no longer does on Node 22+.
+- `npm run test:e2e` — Playwright student/staff/a11y specs (requires Chromium).
+- `npm run test:perf` — autocannon load test (NFR3).
 
-## Tech stack
+## API (beyond the original routes)
+- `GET /api/notifications?unread=1&limit=50` → `{ items, unread }`; `POST /api/notifications/read-all`; `POST /api/notifications/:id/read` (a response-shape change from the old bare array).
+- `GET /api/reports/usage?from=YYYY-MM-DDTHH:mm&to=...` → FR10 usage totals (staff only, counts only).
+- `GET /api/alerts` → open low-stock alerts; `GET /api/slots` returns every upcoming slot to staff and only open ones to students.
 
-- **Server:** [Express 5](https://expressjs.com/) on Node.js 22.13 or newer
-- **Database:** Node's built-in SQLite (`node:sqlite`), a single file at `data/pantry.db`; tests use an in-memory database
-- **Front end:** plain HTML, CSS and JavaScript modules (no framework, no build step)
-- **Tests:** `node:test` (unit and integration), Playwright with axe-core (browser and accessibility), autocannon (load)
-- **Hosting:** Render
-- **Bug tracking:** GitHub Issues
+## Deployment
+See `docs/DEPLOYMENT.md` (Vercel config is `vercel.json`; SQLite does not persist on Vercel).
 
-## Getting started
+## IMPORTANT integration notes
+This patch preserves all previously shown repository source files. Because original `src/db.js` and original `package.json` were not provided, a separate `src/db-adapter.js` is used. Before merging with your existing database module, compare schema, transactions and foreign keys. Original `public/js/api.js` and `ui.js` are not overwritten; this prototype's new page scripts use their own fetch helpers. **This is a class-project starter, not a production-ready site**: security, accessibility, time zone handling, concurrency and notification delivery must be reviewed. University SSO is not implemented. Email delivery is simulated in `email_outbox`.
 
-1. Install [Node.js](https://nodejs.org/) 22.13 or newer. Check with `node --version`.
-2. Clone the repo and install dependencies:
-   ```
-   git clone https://github.com/a0merr/University-Food-Pantry-CSE-350-.git
-   cd University-Food-Pantry-CSE-350-
-   npm install
-   ```
-3. Create the database folder once: `mkdir data`. The server doesn't create it yet, so `npm start` crashes on a fresh clone without it.
-4. For browser tests, install Chromium once: `npx playwright install chromium`
+The npm scripts live in `package.json`: `start`, `seed`, `test`, `test:e2e`, `test:perf`; Node engine is set to >=22.13.
 
-Node may print an `ExperimentalWarning` for `node:sqlite`. That is expected.
-
-## Scripts
-
-These are defined in `package.json`. Each one works as soon as the file it runs has been added.
-
-| Command | What it does | Needs |
-| --- | --- | --- |
-| `npm start` | Starts the site at http://localhost:3000 | `server.js` |
-| `npm run seed` | Resets the database and loads demo data | `scripts/seed.js` |
-| `npm test` | Runs unit and integration tests | `tests/unit/`, `tests/integration/` |
-| `npm run test:unit` | Unit tests only | `tests/unit/` |
-| `npm run test:integration` | Integration tests only | `tests/integration/` |
-| `npm run test:coverage` | Tests with a coverage report for `src/` | as above |
-| `npm run test:e2e` | Browser and accessibility tests | `playwright.config.js`, `tests/e2e/` |
-| `npm run test:perf` | Load test | `tests/perf/load-test.js` |
-| `npm run test:all` | All of the above | everything |
-
-## Project structure
-
-```
-server.js              Express app: JSON, static pages, CSRF check, routers, error handler, hourly reminder job
-src/
-  db.js                database schema, openDatabase(), transaction()
-  lib/                 errors.js, validate.js, time.js
-  auth/                passwords.js (hashing); routes.js (register, login with rate limit, logout, /me)
-  routes/              inventory.js (Abdullah); pickups.js and staff.js (Andrew)
-  services/            inventory, slots, pickups, notifications, reminders, alerts, reports
-public/
-  staff.html           pickup queue, pickup times, low-stock alerts, usage report
-  js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
-tests/
-  unit/                one test file per service, router or page script
-  integration/         staff-flow.test.js: book, prepare, complete, report
-docs/
-  AI_USAGE.md          AI-generated code disclosure
-```
-
-Not added yet: `public/index.html` (sign in), `public/student.html`, `public/css/styles.css`, `scripts/seed.js`, `tests/e2e/`, `tests/perf/`.
-
-## API
-
-Every route is under `/api`. A `POST`, `PATCH` or `DELETE` needs the `X-Requested-With: fetch` header, which `api()` adds.
-
-| Method and path | Who | What it does | Owner |
-| --- | --- | --- | --- |
-| `GET /health` | anyone | Server check | Abdullah |
-| `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | anyone / signed in | Accounts and sessions | Abdullah |
-| `GET /items` | anyone | Item list with stock | Abdullah |
-| `POST /items`, `PATCH /items/:id`, `POST /donations` | staff | Add items, change quantity, log donations | Abdullah |
-| `GET /pickup-slots` | signed in | Pickup times with open spots | Andrew |
-| `POST /pickups` | student | Body `{ slot_id, items: [{ item_id, quantity }] }`. Checks the visit and per-item limits, reserves stock, books the time and sends a "scheduled" notification | Andrew |
-| `GET /pickups/:id`, `POST /pickups/:id/cancel` | owner or staff | View or cancel a pickup; cancel releases reserved stock | Andrew |
-| `GET /notifications`, `PATCH /notifications/:id/read` | signed in | Own notifications; `?unread=true` filters | Andrew |
-| `GET /staff/pickups` | staff | Pickup queue; `?date=YYYY-MM-DD`, `?status=` | Andrew |
-| `POST /staff/pickups/:id/prepare`, `POST /staff/pickups/:id/complete` | staff | Mark ready (sends "ready"), mark picked up | Andrew |
-| `GET /staff/slots`, `POST /staff/slots`, `PATCH /staff/slots/:id`, `DELETE /staff/slots/:id` | staff | Manage pickup times | Andrew |
-| `GET /staff/alerts`, `POST /staff/alerts/check` | staff | Open low-stock alerts; re-check stock now | Andrew |
-| `GET /staff/reports` | staff | Usage totals, no student names; `?from=` and `?to=` dates | Andrew |
-
-## How we work
-
-- **Branches:** one branch per feature (for example `abdullah/auth`). Open a pull request into `main` and get one teammate's review before merging.
-- **Modules:** the project uses ES modules (`"type": "module"`), so write `import`/`export`, never `require`.
-- **Services** take `ctx = { db, clock }` as their first argument, so tests can pass an in-memory database and a fake clock.
-- **Times** are stored as local ISO text from `toLocalIso()` in `src/lib/time.js`. Don't use `toISOString()`: it is UTC and shifts evening pickups to the next day.
-- **Errors:** throw the helpers in `src/lib/errors.js`. The API always answers errors as `{ "error": { "code", "message" } }`, which `public/js/api.js` reads.
-- **Pages** build the DOM with `el()` from `public/js/ui.js` (never `innerHTML` with data) and send every request through `api()`, which adds the CSRF header.
-- **Tests:** everyone writes unit tests for their own code in `tests/unit/`.
-- **Bugs** go in GitHub Issues with steps to reproduce, expected result and actual result.
-- **Never commit** `data/`, `.env`, `node_modules/` or real student information.
-
-## AI-generated code
-
-The assignment requires at least 10% AI-generated code and asks us to say where it is. The seven foundation files are AI-generated by Claude Code, and each starts with the comment `AI-generated (Claude Code) - see docs/AI_USAGE.md`. The inventory and security code was written with ChatGPT's help. [docs/AI_USAGE.md](docs/AI_USAGE.md) lists every file and the current AI share. If you use AI for anything, log it there.
-
-## License
-
-MIT
+Do not commit `data/`, `node_modules/`, `.env`, or real student data. See `docs/INTEGRATION_CHECKLIST.md`.

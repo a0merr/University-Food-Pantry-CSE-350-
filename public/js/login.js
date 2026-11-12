@@ -1,0 +1,4 @@
+const $=id=>document.getElementById(id);function message(s,error=true){$('message').className='message '+(error?'error':'ok');$('message').textContent=s}
+async function api(path,body){const res=await fetch('/api'+path,{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'fetch'},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error?.message||'Request failed');return data}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));try{const user=await api('/auth/login',d);location.href=user.role==='staff'?'/staff.html':'/student.html'}catch(err){message(err.message)}});
+$('registerForm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));try{await api('/auth/register',d);message('Account created. You can now sign in.',false)}catch(err){message(err.message)}});

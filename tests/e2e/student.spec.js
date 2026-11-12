@@ -1,0 +1,1 @@
+const {test,expect}=require('@playwright/test');test('student can sign in',async({page})=>{await page.goto('/');await page.locator('#loginForm [name=email]').fill('student1@pantry.test');await page.locator('#loginForm [name=password]').fill('DemoPass123!');await page.getByRole('button',{name:'Sign in'}).click();await expect(page).toHaveURL(/student\.html/)});
