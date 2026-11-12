@@ -6,7 +6,7 @@ Everything we hand in on **Friday, November 13**, apart from the code itself. Th
 |---|---|
 | [CSE350_Demo_Deck_DRAFT.pptx](CSE350_Demo_Deck_DRAFT.pptx) | The presentation (13 slides, with speaker notes naming who presents each slide) |
 | [RECORDING_GUIDE.md](RECORDING_GUIDE.md) (also [.docx](CSE350_Recording_Guide.docx)) | Who records which slides, what to show on the live site, how to record, and how the clips get combined |
-| [REPORT_DRAFT.md](REPORT_DRAFT.md) (also [.docx](CSE350_Written_Report_DRAFT.docx)) | The written report |
+| [../report/REPORT_DRAFT.md](../report/REPORT_DRAFT.md) (also [.docx](../report/CSE350_Written_Report_DRAFT.docx)) | The written report, in `docs/report/` |
 | [screenshots/](screenshots/) | The sign-in page and the staff page (desktop and phone), taken from `main` with the seed data |
 
 The live site is https://university-food-pantry-cse-350.onrender.com. Demo accounts come from `npm run seed`; the passwords are in Abdullah's message in the team chat.

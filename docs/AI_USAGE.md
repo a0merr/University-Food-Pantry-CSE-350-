@@ -104,8 +104,8 @@ These are documents, not source code, so they are not part of the code share abo
 
 | File | What Claude Code did |
 |---|---|
-| `docs/demo/CSE350_Demo_Deck_DRAFT.pptx` | Drafted the slide deck from the code on `main`, with screenshots of the running app |
-| `docs/demo/REPORT_DRAFT.md`, `docs/demo/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; sections marked TO ADD are for each teammate to write |
-| `docs/demo/RECORDING_GUIDE.md`, `docs/demo/CSE350_Recording_Guide.docx` | Drafted the recording plan |
-| `docs/demo/README.md` | Index of the demo materials and the remaining to-do list |
-| `docs/demo/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
+| `docs/presentation/CSE350_Demo_Deck_DRAFT.pptx` | Drafted the slide deck from the code on `main`, with screenshots of the running app |
+| `docs/report/REPORT_DRAFT.md`, `docs/report/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; sections marked TO ADD are for each teammate to write |
+| `docs/presentation/RECORDING_GUIDE.md`, `docs/presentation/CSE350_Recording_Guide.docx` | Drafted the recording plan |
+| `docs/presentation/README.md` | Index of the demo materials and the remaining to-do list |
+| `docs/presentation/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
