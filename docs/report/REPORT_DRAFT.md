@@ -4,7 +4,7 @@ subtitle: "CSE 350, Group 15 · November 13, 2026 · DRAFT"
 author: "Abdullah Saadawi, Mohamed Muse, Andrew Merritt, Gavin Marvelle"
 ---
 
-> **Draft status.** This draft reflects the `main` branch on November 12, 2026 (through pull request #14, plus #15). Sections marked **TO ADD** need input from the named teammate. Remove this note and every TO ADD before submitting.
+> **Draft status.** This draft reflects the `main` branch on November 12, 2026 (through pull request #24). Sections marked **TO ADD** need input from the named teammate. Remove this note and every TO ADD before submitting.
 
 # 1. Introduction
 
@@ -53,9 +53,9 @@ Errors are always returned as `{ "error": { "code", "message" } }`.
 | Req | Feature | Owner | Status (Nov 12) |
 |---|---|---|---|
 | FR1 | Accounts and roles | Abdullah | Done (sign-in page and seed data in PR #14; sign-out link in PR #15) |
-| FR2 | Browse available items | Mohamed | In progress |
-| FR3 | Search and filter | Mohamed | In progress |
-| FR4 | Food requests | Mohamed | In progress; booking API exists |
+| FR2 | Browse available items | Mohamed | Done (PR #22) |
+| FR3 | Search and filter | Mohamed | Done (PR #22) |
+| FR4 | Food requests | Mohamed | Done (PR #22) |
 | FR5 | Pickup times | Andrew | Done |
 | FR6 | Cancellations and notifications | Andrew | Done |
 | FR7 | Inventory and donations | Abdullah | API done; no staff screen yet |
@@ -70,7 +70,7 @@ Abdullah's sign-in page (`public/index.html`) signs in through `POST /api/auth/l
 
 ## 4.2 Browse, search and requests (FR2 to FR4)
 
-TO ADD (Mohamed): the student page, how browsing and search work, and how a request is submitted. The booking endpoint `POST /api/pickups` already takes `{ slot_id, items }` and reserves the stock; the student page connects to it through `public/js/student-pickup.js`.
+The student page (`public/student.html`) lists only active items that are in stock, with a search box (item name or category) and a category filter (`public/js/student-filter.js`). A student enters quantities, picks an open pickup time and submits; the page sends `POST /api/pickups` and shows the "scheduled" notification, which can be marked read. Quantities are checked against what is available before sending. TO ADD (Mohamed): describe the page and your design choices in your own words.
 
 ## 4.3 Pickup times (FR5)
 
@@ -107,20 +107,20 @@ TO ADD (Abdullah): adding items, changing quantities and logging donations. Thes
 
 ## 5.1 Approach
 
-Each developer wrote unit tests for their own code. Services are tested against an in-memory database with a fixed clock, so results do not depend on the time of day.
+Each developer wrote unit tests for their own code. Services are tested against an in-memory database with a fixed clock, so results do not depend on the time of day. Gavin's QA suite (PR #21) adds unit and integration tests for every route and service, front-end tests that run the page scripts in jsdom, Playwright browser tests on desktop and phone with axe accessibility scans, an integration test that runs the real server and seed script in a temporary folder, and an autocannon load test. Known bugs were written as `todo` tests so they were reported without failing the run, and turned into normal tests once fixed.
 
-TO ADD (Gavin): test plan summary, test cases per requirement, browser and accessibility test approach, load test setup.
+TO ADD (Gavin): test plan summary, how you chose what to test, and the load-test targets.
 
-## 5.2 Results so far
+## 5.2 Results
 
 | Check | Result |
 |---|---|
-| Unit and integration tests (`npm test`) | 34 passing, 0 failing (with PR #15) |
-| End-to-end API run against the live server | 27 of 27 checks pass: login, booking, full slot, second open request, out of stock, notifications, alerts, prepare, complete, stock totals, cancel, permissions, report contents, slot deletion, login behind an HTTPS proxy |
-| Edge-case API run against the live server | 33 of 33 pass: malformed and missing input, limits, past pickup times, other users' pickups and notifications, skipped steps, logout, duplicate registration, login rate limit |
-| axe accessibility scan, WCAG 2.1 A and AA rules, staff page | 0 violations |
-| Playwright browser tests | TO ADD (Gavin) |
-| Load test | TO ADD (Gavin) |
+| Unit and integration tests (`npm test`) | 221 tests: 218 pass, 0 fail, 3 `todo` (known FR7 gaps in the inventory API) |
+| Browser and accessibility tests (`npm run test:e2e`, Playwright, desktop and phone) | 34 of 34 pass |
+| axe accessibility scans, WCAG 2.1 A and AA | 0 violations on every page |
+| End-to-end API run against a running server | 27 of 27 checks pass: login, booking, full slot, second open request, out of stock, notifications, alerts, prepare, complete, stock totals, cancel, permissions, report contents, slot deletion, login behind an HTTPS proxy |
+| Edge-case API run against a running server | 33 of 33 pass: malformed and missing input, limits, past pickup times, other users' pickups and notifications, skipped steps, logout, duplicate registration, login rate limit |
+| Load test (`npm run test:perf`) | TO ADD (Gavin): results from your run |
 
 ## 5.3 Defects found and fixed
 
@@ -134,8 +134,15 @@ TO ADD (Gavin): test plan summary, test cases per requirement, browser and acces
 | Malformed JSON in a request | 500 error | 400 with a clear message |
 | Editing a pickup time | Could move it into the past | 400, like creating one (unit test added) |
 | Issue #11 | Home page returned 404 | Sign-in page (PR #14) |
+| Issue #18 | Students who signed in were sent to a page that did not exist (404) | Student page (PR #22) |
+| Issue #19 | After a student signed in on another tab, the staff page's Check Stock and Run Report failed with "You do not have access" | All tabs share one sign-in; the staff page now notices and says so (PR #20) |
+| Live site clock | Render runs in UTC, so pickup-time checks, reminders and report dates were 5 hours off | Server and seed default to Eastern time (PR #23) |
+| Unknown API route; body over 100 KB | HTML 404 page; 500 error | JSON 404; 413 (PR #23) |
+| Daylight saving; last second of the day | 2:30 AM on spring-forward day saved as 3:30; queue left out a 23:59:59 pickup | Rejected; included (PR #23) |
+| Failed sign-out | Left an unhandled error in the browser | Caught (PR #24) |
+| QA tests and student page together | 8 student-page tests failed once both were merged | Tests use the real page (PR #24) |
 
-TO ADD (Gavin): defects logged as GitHub Issues during browser testing, with severity and status.
+Issues #11, #18 and #19 were logged by Gavin on GitHub. The remaining known gaps are in the FR7 inventory API: new items cannot get a low-stock threshold, per-visit limit or dietary tags, and items cannot be retired.
 
 # 6. Deployment
 
@@ -151,12 +158,13 @@ The assignment requires at least 10% AI-generated code and asks us to say where 
 
 | Source | Lines | Share |
 |---|---:|---:|
-| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 9.5% |
-| Claude Code bug fixes, shared stylesheet, staff cancel button and sign-out link (Nov 12, PRs #12 and #15) | 290 | 7.6% |
-| ChatGPT-assisted (inventory and security code; whole files counted) | 544 | 14.3% |
-| **All AI-generated or AI-assisted** | **1,194** | **31.3%** |
+| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 4.6% |
+| Claude Code, Andrew: bug fixes, shared stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes | 436 | 5.6% |
+| Claude Code, Gavin: QA test suite (both commits co-authored by Claude Opus 5.5) | 3,700 | 47.7% |
+| ChatGPT-assisted, Abdullah (inventory and security code; whole files counted) | 544 | 7.0% |
+| **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
 
-Counted over 3,809 lines of `.js`, `.html` and `.css`. Because the ChatGPT row counts whole files that were only partly AI-assisted, 31.3% is an upper bound. Abdullah's sign-in page and seed script are counted as team-written. TO ADD (Andrew): recount after the final merges.
+Counted over 7,756 lines of `.js`, `.html` and `.css`, including tests. Because the ChatGPT row counts whole files that were only partly AI-assisted, 65.0% is an upper bound. Most of the AI share is the QA test suite. Abdullah's sign-in page and seed script and Mohamed's student page carry no AI attribution and are counted as team-written.
 
 # 8. Project management
 
