@@ -1,10 +1,10 @@
 # Test report
 
-Execution date: 2026-11-09. Environment: Windows 11, Node v25.8.0, local SQLite (`node:sqlite`), fake seed data.
-Command: `npm test` (`node --test tests/unit/*.test.js tests/integration/*.test.js`).
+Execution date: 2026-11-12. Environment: Windows, Node test runner, local SQLite (`node:sqlite`), fake seed data.
+Command: `npm.cmd test` (`node --test tests/unit/*.test.js tests/integration/*.test.js`).
 
-**Result: 22 tests, 22 passed, 0 failed** (unit + integration). Playwright (TC13–TC15) and the
-autocannon load test (TC14) were **not run** in this pass — no Chromium installed and no
+**Result: 22 tests, 22 passed, 0 failed** (unit + integration). Playwright (TC13-TC15) and the
+autocannon load test (TC14) were **not run** in this pass - no Chromium installed and no
 measurements taken. They are marked Blocked below, not passed.
 
 ## Test cases

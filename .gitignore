@@ -3,3 +3,4 @@ data/
 .env
 playwright-report/
 test-results/
+.tmp-qa/

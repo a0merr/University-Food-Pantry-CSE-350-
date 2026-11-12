@@ -12,7 +12,7 @@
 | TC09 | FR6 | Cancel pickup | Stock released; notification created |
 | TC10 | FR8 | Prepare and pickup | State changes; quantity decreases |
 | TC11 | FR9 | Fall below threshold | Alert opens |
-| TC12 | FR10 | Aggregate report | **Not yet implemented; do not claim pass** |
+| TC12 | FR10 | Aggregate report | Staff-only counts for pickups, units, students served, donations and category totals; no student identities |
 | TC13 | NFR2 | axe + manual keyboard/screenreader | WCAG 2.1 AA review |
 | TC14 | NFR3 | 200 concurrent users | Pages load within 3s |
 | TC15 | NFR4 | Desktop/mobile browsers | Functional in browsers |
