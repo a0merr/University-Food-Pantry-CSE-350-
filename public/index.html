@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- AI-generated (Claude Code) - see docs/AI_USAGE.md -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in | Campus Food Pantry</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Campus Food Pantry</h1>
+  </header>
+  <main class="narrow">
+    <section aria-labelledby="signin-title">
+      <h2 id="signin-title">Sign in</h2>
+      <div id="signin-message" aria-live="polite"></div>
+      <form id="signin-form" class="stack">
+        <label>Email
+          <input id="signin-email" name="email" type="email" autocomplete="username" required>
+        </label>
+        <label>Password
+          <input id="signin-password" name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit">Sign in</button>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="/js/login.js"></script>
+</body>
+</html>
