@@ -2,73 +2,13 @@
 // project's own data/pantry.db is never touched.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { spawn, spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { createServer } from 'node:net';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { call } from '../helpers.js';
+import { STAFF, STUDENT, bootServer, makeWorkdir, removeWorkdir, runSeed } from '../server-harness.js';
 
-const ROOT = resolve('.');
-const SERVER = join(ROOT, 'server.js');
-const SEED = join(ROOT, 'scripts', 'seed.js');
 const XRW = { 'X-Requested-With': 'fetch' };
-
-// Demo accounts created by scripts/seed.js.
-const STAFF = { email: 'staff@pantry.demo', password: 'StaffDemo123!' };
-const STUDENT = { email: 'student1@pantry.demo', password: 'StudentDemo123!' };
-
-function freePort() {
-  return new Promise((done, fail) => {
-    const probe = createServer();
-    probe.once('error', fail);
-    probe.listen(0, '127.0.0.1', () => {
-      const { port } = probe.address();
-      probe.close(() => done(port));
-    });
-  });
-}
-
-async function bootServer(cwd, env = {}) {
-  const port = await freePort();
-  const child = spawn(process.execPath, ['--no-warnings', SERVER], {
-    cwd,
-    env: { ...process.env, PORT: String(port), RENDER: '', TRUST_PROXY: '', ...env },
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
-  let output = '';
-  await new Promise((ready, fail) => {
-    const timer = setTimeout(() => fail(new Error(`server did not start:\n${output}`)), 15_000);
-    const onData = (chunk) => {
-      output += chunk;
-      if (output.includes('Server running')) {
-        clearTimeout(timer);
-        ready();
-      }
-    };
-    child.stdout.on('data', onData);
-    child.stderr.on('data', (chunk) => { output += chunk; });
-    child.once('exit', (code) => {
-      clearTimeout(timer);
-      fail(new Error(`server exited with ${code}:\n${output}`));
-    });
-  });
-  return {
-    url: `http://127.0.0.1:${port}`,
-    stop: () => new Promise((done) => {
-      child.removeAllListeners('exit');
-      child.once('exit', done);
-      child.kill();
-    })
-  };
-}
-
-function makeWorkdir() {
-  const dir = mkdtempSync(join(tmpdir(), 'pantry-server-'));
-  cpSync(join(ROOT, 'public'), join(dir, 'public'), { recursive: true });
-  return dir;
-}
 
 function cookieFrom(res) {
   return /session=[^;]+/.exec(res.headers.get('set-cookie') ?? '')?.[0];
@@ -81,12 +21,12 @@ async function login(url, account) {
 }
 
 const workdir = makeWorkdir();
-const seed = spawnSync(process.execPath, ['--no-warnings', SEED, '--reset'], { cwd: workdir, encoding: 'utf8' });
+const seed = runSeed(workdir);
 const app = await bootServer(workdir);
 
 test.after(async () => {
   await app.stop();
-  rmSync(workdir, { recursive: true, force: true });
+  removeWorkdir(workdir);
 });
 
 test('seed script runs cleanly and creates the database', () => {
@@ -238,6 +178,6 @@ test('behind a proxy (TRUST_PROXY=1) the https Origin is accepted', async () => 
     assert.ok(existsSync(join(dir, 'data')), 'server creates data/ on first start');
   } finally {
     await proxied.stop();
-    rmSync(dir, { recursive: true, force: true });
+    removeWorkdir(dir);
   }
 });
