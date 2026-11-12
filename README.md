@@ -3,20 +3,20 @@
 CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
 
 > **Status (Nov 12, 2026):** merged into `main` so far:
-> - Accounts and security (FR1, NFR1)
+> - Accounts and security (FR1, NFR1), with the sign-in page and demo seed data (`npm run seed`)
 > - Inventory and donations (FR7)
 > - Pickup times, cancellations and notifications (FR5, FR6)
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
-> - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself
+> - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself; sign-out link on the staff page
 >
-> `npm test`: 33 passing (32 unit, 1 integration).
+> **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
+>
+> `npm test`: 34 passing (33 unit, 1 integration).
 >
 > Still to come:
-> - Sign-in page and student page: browse, search and request (FR2–FR4)
-> - Seed script
+> - Student page: browse, search and request (FR2–FR4)
 > - Screens for adding items and logging donations (FR7 is API-only so far)
 > - Browser, accessibility and load tests
-> - Render deploy
 >
 > The Development Demo is due **Fri, Nov 13**.
 
@@ -82,9 +82,10 @@ src/
   routes/              inventory.js (Abdullah); pickups.js and staff.js (Andrew)
   services/            inventory, slots, pickups, notifications, reminders, alerts, reports
 public/
+  index.html           sign-in page; sends staff and students to their page
   staff.html           pickup queue, pickup times, low-stock alerts, usage report
   css/styles.css       shared stylesheet for every page
-  js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
+  js/                  api.js, ui.js, signout.js, staff-pickups.js, staff-reports.js, student-pickup.js
 tests/
   unit/                one test file per service, router or page script
   integration/         staff-flow.test.js: book, prepare, complete, report
@@ -92,7 +93,7 @@ docs/
   AI_USAGE.md          AI-generated code disclosure
 ```
 
-Not added yet: `public/index.html` (sign in), `public/student.html`, `scripts/seed.js`, `tests/e2e/`, `tests/perf/`.
+Not added yet: `public/student.html`, `tests/e2e/`, `tests/perf/`.
 
 ## API
 
