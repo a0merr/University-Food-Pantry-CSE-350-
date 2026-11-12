@@ -91,6 +91,8 @@ tests/
   integration/         staff-flow.test.js: book, prepare, complete, report
 docs/
   AI_USAGE.md          AI-generated code disclosure
+  presentation/        demo deck, recording guide, screenshots, and the team's to-do list
+  report/              written report draft
 ```
 
 Not added yet: `public/student.html`, `tests/e2e/`, `tests/perf/`.
