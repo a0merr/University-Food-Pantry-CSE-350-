@@ -95,3 +95,15 @@ Claude Code code in total is 624 lines (17.2%), so the at-least-10% requirement 
 These contributions were implemented with ChatGPT assistance and tested locally. The existing shared foundation files were generated with Claude Code.
 
 The AI-generated code percentage should be recalculated when the full project is complete.
+
+## Demo documents drafted with Claude Code (November 12, 2026)
+
+These are documents, not source code, so they are not part of the code share above.
+
+| File | What Claude Code did |
+|---|---|
+| `docs/demo/CSE350_Demo_Deck_DRAFT.pptx` | Drafted the slide deck from the code on `main`, with screenshots of the running app |
+| `docs/demo/REPORT_DRAFT.md`, `docs/demo/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; sections marked TO ADD are for each teammate to write |
+| `docs/demo/RECORDING_GUIDE.md`, `docs/demo/CSE350_Recording_Guide.docx` | Drafted the recording plan |
+| `docs/demo/README.md` | Index of the demo materials and the remaining to-do list |
+| `docs/demo/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
