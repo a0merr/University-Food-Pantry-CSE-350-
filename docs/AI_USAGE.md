@@ -49,16 +49,16 @@ The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row c
 
 ### Recount (Nov 12, 2026, after the bug-fix and stylesheet PR)
 
-Tracked `.js`, `.html` and `.css` files total 3,728 lines.
+Tracked `.js`, `.html` and `.css` files total 3,751 lines.
 
 | What is counted | Lines | Share |
 |---|---:|---:|
-| Claude Code foundation files | 360 | 9.7% |
-| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button and sign-in page (table below) | 356 | 9.5% |
-| ChatGPT-assisted, Abdullah (same files as above) | 544 | 14.6% |
-| **All AI-generated or AI-assisted** | **1,260** | **33.8%** |
+| Claude Code foundation files | 360 | 9.6% |
+| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button, sign-in page and sign-out link (table below) | 379 | 10.1% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 14.5% |
+| **All AI-generated or AI-assisted** | **1,283** | **34.2%** |
 
-Claude Code code in total is 716 lines (19.2%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Recount again after the student page and seed script are merged.
+Claude Code code in total is 739 lines (19.7%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Recount again after the student page and seed script are merged.
 
 ## Claude Code changes, November 12, 2026
 
@@ -77,7 +77,8 @@ Claude Code code in total is 716 lines (19.2%), so the at-least-10% requirement 
 | `public/js/staff-pickups.js` | 13 | FR6: Cancel button in the staff pickup queue (uses the existing cancel endpoint; the student is notified and the stock released) |
 | `tests/unit/reports.test.js`, `tests/unit/slots.test.js` | 73 | One unit test for each of the three service fixes |
 | `public/index.html`, `public/js/login.js` | 70 new | Sign-in page (Issue #11): signs in through the existing login API, sends staff to `/staff.html` and students to `/student.html`, and skips the form when already signed in. Both files start with the AI-generated marker comment |
-| `tests/unit/login-ui.test.js` | 22 new | Checks the sign-in page's form, stylesheet and script |
+| `public/js/signout.js`, `public/staff.html` | 14 | Sign-out link in the staff page header (any page can reuse `signout.js` with an `id="sign-out"` link) |
+| `tests/unit/login-ui.test.js` | 31 new | Checks the sign-in page's form, stylesheet and script, and the staff page's sign-out link |
 
 ## Additional AI Assistance — Inventory and Security
 

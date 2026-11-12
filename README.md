@@ -9,7 +9,7 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
 > - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself
 >
-> `npm test`: 35 passing (34 unit, 1 integration).
+> `npm test`: 36 passing (35 unit, 1 integration).
 >
 > Still to come:
 > - Student page: browse, search and request (FR2–FR4)
@@ -85,7 +85,7 @@ public/
   index.html           sign-in page; sends staff and students to their page
   staff.html           pickup queue, pickup times, low-stock alerts, usage report
   css/styles.css       shared stylesheet for every page
-  js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
+  js/                  api.js, ui.js, login.js, signout.js, staff-pickups.js, staff-reports.js, student-pickup.js
 tests/
   unit/                one test file per service, router or page script
   integration/         staff-flow.test.js: book, prepare, complete, report
