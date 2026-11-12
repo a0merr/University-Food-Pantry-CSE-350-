@@ -86,6 +86,30 @@ test('staff cannot lower capacity below booked pickups', () => {
   }
 });
 
+test('slots with picked-up or cancelled pickups cannot be deleted', () => {
+  const db = openDatabase();
+
+  try {
+    const slot = createSlot({ db, clock }, { starts_at: '2026-11-10T14:00', capacity: 4 });
+    const student = db.prepare(`
+      INSERT INTO users (email, name, password_hash, role, created_at)
+      VALUES ('student@example.edu', 'Student', 'hash', 'student', '2026-11-10T09:00:00')
+    `).run();
+    db.prepare(`
+      INSERT INTO requests (student_id, status, slot_id, created_at)
+      VALUES (?, 'cancelled', ?, '2026-11-10T09:05:00')
+    `).run(Number(student.lastInsertRowid), slot.id);
+
+    assert.throws(
+      () => deleteSlot({ db, clock }, slot.id),
+      (err) => err.status === 409 && /past or cancelled/.test(err.message)
+    );
+    assert.equal(getSlot({ db, clock }, slot.id).id, slot.id);
+  } finally {
+    db.close();
+  }
+});
+
 test('staff can delete empty pickup slots', () => {
   const db = openDatabase();
 

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { openDatabase } from '../../src/db.js';
-import { schedule, prepare, complete } from '../../src/services/pickups.js';
+import { schedule, prepare, complete, cancel } from '../../src/services/pickups.js';
 import { staffReport } from '../../src/services/reports.js';
 
 function addUser(db, role, email) {
@@ -62,6 +62,38 @@ test('staffReport rejects invalid date filters', () => {
       () => staffReport({ db }, { from: '2026-99-10' }),
       /valid date/
     );
+  } finally {
+    db.close();
+  }
+});
+
+test('staffReport top items leave out cancelled requests', () => {
+  const db = openDatabase();
+
+  try {
+    const firstId = addUser(db, 'student', 'first@example.edu');
+    const secondId = addUser(db, 'student', 'second@example.edu');
+    const itemId = addItem(db);
+    const slotId = addSlot(db);
+    const kept = schedule(
+      { db },
+      firstId,
+      { slot_id: slotId, items: [{ item_id: itemId, quantity: 2 }] }
+    );
+    const dropped = schedule(
+      { db },
+      secondId,
+      { slot_id: slotId, items: [{ item_id: itemId, quantity: 1 }] }
+    );
+    cancel({ db }, dropped.id, { role: 'staff' });
+    prepare({ db }, kept.id);
+    complete({ db }, kept.id);
+
+    const report = staffReport({ db });
+
+    assert.equal(report.pickups.status_counts.find(row => row.status === 'cancelled').count, 1);
+    assert.equal(report.pickups.top_items.length, 1);
+    assert.equal(report.pickups.top_items[0].quantity, 2);
   } finally {
     db.close();
   }

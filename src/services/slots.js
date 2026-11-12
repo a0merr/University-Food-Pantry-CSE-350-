@@ -142,5 +142,12 @@ export function deleteSlot(ctx, slotId) {
     throw conflict('Cannot delete a slot with scheduled pickups.');
   }
 
+  // Picked-up and cancelled requests still point at the slot (foreign key),
+  // so deleting it would fail. Keep the slot so pickup history stays intact.
+  const history = ctx.db.prepare('SELECT COUNT(*) AS count FROM requests WHERE slot_id = ?').get(id).count;
+  if (history > 0) {
+    throw conflict('Cannot delete a slot that has past or cancelled pickups.');
+  }
+
   ctx.db.prepare('DELETE FROM pickup_slots WHERE id = ?').run(id);
 }
