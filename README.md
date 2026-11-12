@@ -2,17 +2,19 @@
 
 CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
 
-> **Status (Nov 10, 2026):** merged into `main` so far:
+> **Status (Nov 12, 2026):** merged into `main` so far:
 > - Accounts and security (FR1, NFR1)
 > - Inventory and donations (FR7)
 > - Pickup times, cancellations and notifications (FR5, FR6)
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
+> - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself
 >
-> `npm test`: 30 passing (29 unit, 1 integration).
+> `npm test`: 32 passing (31 unit, 1 integration).
 >
 > Still to come:
 > - Sign-in page and student page: browse, search and request (FR2–FR4)
-> - Styles and the seed script
+> - Seed script
+> - Screens for adding items and logging donations (FR7 is API-only so far)
 > - Browser, accessibility and load tests
 > - Render deploy
 >
@@ -45,8 +47,11 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
    cd University-Food-Pantry-CSE-350-
    npm install
    ```
-3. Create the database folder once: `mkdir data`. The server doesn't create it yet, so `npm start` crashes on a fresh clone without it.
-4. For browser tests, install Chromium once: `npx playwright install chromium`
+3. For browser tests, install Chromium once: `npx playwright install chromium`
+
+The server creates the `data/` folder on first start. Every page should link the shared stylesheet with `<link rel="stylesheet" href="/css/styles.css">`. Use `<main class="narrow">` and `<form class="stack">` for a narrow, stacked form such as sign-in.
+
+**Deploying:** Render ends HTTPS at a proxy. The server trusts that proxy when the `RENDER` environment variable is set (Render sets it automatically), so the Origin check and login rate limit see the real protocol and client IP. On another host behind a proxy, set `TRUST_PROXY=1`.
 
 Node may print an `ExperimentalWarning` for `node:sqlite`. That is expected.
 
@@ -78,6 +83,7 @@ src/
   services/            inventory, slots, pickups, notifications, reminders, alerts, reports
 public/
   staff.html           pickup queue, pickup times, low-stock alerts, usage report
+  css/styles.css       shared stylesheet for every page
   js/                  api.js, ui.js, staff-pickups.js, staff-reports.js, student-pickup.js
 tests/
   unit/                one test file per service, router or page script
@@ -86,7 +92,7 @@ docs/
   AI_USAGE.md          AI-generated code disclosure
 ```
 
-Not added yet: `public/index.html` (sign in), `public/student.html`, `public/css/styles.css`, `scripts/seed.js`, `tests/e2e/`, `tests/perf/`.
+Not added yet: `public/index.html` (sign in), `public/student.html`, `scripts/seed.js`, `tests/e2e/`, `tests/perf/`.
 
 ## API
 
