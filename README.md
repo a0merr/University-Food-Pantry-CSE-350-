@@ -11,7 +11,7 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 >
 > **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
 >
-> `npm test`: 34 passing (33 unit, 1 integration).
+> `npm test`: 35 passing (34 unit, 1 integration).
 >
 > Still to come:
 > - Student page: browse, search and request (FR2–FR4)

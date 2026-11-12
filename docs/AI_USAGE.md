@@ -49,16 +49,16 @@ The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row c
 
 ### Recount (Nov 12, 2026, after the bug-fix and stylesheet PR)
 
-Tracked `.js`, `.html` and `.css` files total 3,809 lines (after Abdullah's sign-in page and seed script, PR #14, and the sign-out link).
+Tracked `.js`, `.html` and `.css` files total 3,861 lines (after Abdullah's sign-in page and seed script, PR #14, the sign-out link and the staff page account check).
 
 | What is counted | Lines | Share |
 |---|---:|---:|
-| Claude Code foundation files | 360 | 9.5% |
-| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button and sign-out link (table below) | 290 | 7.6% |
-| ChatGPT-assisted, Abdullah (same files as above) | 544 | 14.3% |
-| **All AI-generated or AI-assisted** | **1,194** | **31.3%** |
+| Claude Code foundation files | 360 | 9.3% |
+| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button, sign-out link and staff account check (table below) | 342 | 8.9% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 14.1% |
+| **All AI-generated or AI-assisted** | **1,246** | **32.3%** |
 
-Claude Code code in total is 650 lines (17.1%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) are counted as team-written; Abdullah, move them to the ChatGPT row if AI helped. Recount again after the student page is merged.
+Claude Code code in total is 702 lines (18.2%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) are counted as team-written; Abdullah, move them to the ChatGPT row if AI helped. Recount again after the student page is merged.
 
 ## Claude Code changes, November 12, 2026
 
@@ -77,7 +77,8 @@ Claude Code code in total is 650 lines (17.1%), so the at-least-10% requirement 
 | `public/js/staff-pickups.js` | 13 | FR6: Cancel button in the staff pickup queue (uses the existing cancel endpoint; the student is notified and the stock released) |
 | `tests/unit/reports.test.js`, `tests/unit/slots.test.js` | 73 | One unit test for each of the three service fixes |
 | `public/js/signout.js`, `public/staff.html` | 14 | Sign-out link in the staff page header; any page can reuse `signout.js` with an `id="sign-out"` link. `signout.js` starts with the AI-generated marker comment |
-| `tests/unit/signout-ui.test.js` | 12 new | Checks the staff page's sign-out link |
+| `tests/unit/signout-ui.test.js` | 22 | Checks the staff page's sign-out link and account check |
+| `public/js/staff-guard.js`, `public/staff.html` | 42 | Issue #19: the staff page re-checks the signed-in account on load and when the tab comes back into view, and explains when the browser is now signed in as a student (all tabs share one sign-in). Starts with the AI-generated marker comment |
 
 ## Additional AI Assistance — Inventory and Security
 
