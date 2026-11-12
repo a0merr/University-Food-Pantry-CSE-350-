@@ -1,4 +1,5 @@
 import express from 'express';
+import { mkdirSync } from 'node:fs';
 import { openDatabase } from './src/db.js';
 import { authRoutes } from './src/auth/routes.js';
 import { inventoryRoutes } from './src/routes/inventory.js';
@@ -8,9 +9,19 @@ import { sendDueReminders } from './src/services/reminders.js';
 
 const app = express();
 
+// Render (and most hosts) end HTTPS at a proxy and forward plain HTTP. Trusting
+// that one proxy hop makes req.protocol "https" and req.ip the real client, so
+// the Origin check below and the login rate limit work in production. Render
+// sets RENDER automatically; set TRUST_PROXY=1 on other hosts.
+if (process.env.RENDER || process.env.TRUST_PROXY) {
+  app.set('trust proxy', 1);
+}
+
 app.use(express.json());
 app.use(express.static('public'));
 
+// A fresh clone has no data/ folder, and SQLite cannot create it.
+mkdirSync('data', { recursive: true });
 const db = openDatabase('data/pantry.db');
 
 app.get('/api/health', (req, res) => {
@@ -56,6 +67,12 @@ app.use('/api', inventoryRoutes(db));
 app.use('/api', pickupRoutes(db));
 app.use('/api', staffRoutes(db));
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({
+      error: { code: 'bad_request', message: 'Request body is not valid JSON.' }
+    });
+  }
+
   if (err.status && err.code) {
     return res.status(err.status).json({
       error: {
@@ -77,13 +94,17 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 const REMINDER_INTERVAL_MS = 60 * 60 * 1000;
 
-setInterval(() => {
+function runReminders() {
   try {
     sendDueReminders({ db });
   } catch (err) {
     console.error('Reminder job failed:', err);
   }
-}, REMINDER_INTERVAL_MS).unref();
+}
+
+// Run once at startup too, so reminders don't wait an hour after a restart.
+runReminders();
+setInterval(runReminders, REMINDER_INTERVAL_MS).unref();
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

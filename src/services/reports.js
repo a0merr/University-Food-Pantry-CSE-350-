@@ -48,6 +48,8 @@ export function pickupReport(ctx, filters = {}) {
     ORDER BY day
   `).all(...params);
 
+  // Cancelled requests give their stock back, so they don't count as usage.
+  const itemWhere = [...where, "requests.status <> 'cancelled'"];
   const itemTotals = ctx.db.prepare(`
     SELECT
       items.id AS item_id,
@@ -56,7 +58,7 @@ export function pickupReport(ctx, filters = {}) {
     FROM request_items
     JOIN requests ON requests.id = request_items.request_id
     JOIN items ON items.id = request_items.item_id
-    ${whereSql}
+    WHERE ${itemWhere.join(' AND ')}
     GROUP BY items.id
     ORDER BY quantity DESC, items.name
     LIMIT 10

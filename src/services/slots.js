@@ -114,6 +114,10 @@ export function updateSlot(ctx, slotId, data) {
     ? slot.capacity
     : requireInt(data.capacity, 'Capacity', { min: 1, max: 100 });
 
+  if (data.starts_at !== undefined && parseLocalIso(startsAt) <= (ctx.clock ?? systemClock).now()) {
+    throw badRequest('Pickup slot must be in the future.');
+  }
+
   if (capacity < bookedCount(ctx.db, id)) {
     throw conflict('Capacity cannot be less than scheduled pickups.');
   }
@@ -140,6 +144,13 @@ export function deleteSlot(ctx, slotId) {
 
   if (bookedCount(ctx.db, id) > 0) {
     throw conflict('Cannot delete a slot with scheduled pickups.');
+  }
+
+  // Picked-up and cancelled requests still point at the slot (foreign key),
+  // so deleting it would fail. Keep the slot so pickup history stays intact.
+  const history = ctx.db.prepare('SELECT COUNT(*) AS count FROM requests WHERE slot_id = ?').get(id).count;
+  if (history > 0) {
+    throw conflict('Cannot delete a slot that has past or cancelled pickups.');
   }
 
   ctx.db.prepare('DELETE FROM pickup_slots WHERE id = ?').run(id);
