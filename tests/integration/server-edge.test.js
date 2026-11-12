@@ -56,21 +56,21 @@ test('a JSON body just under the 100 KB limit is accepted', async () => {
   assert.equal(res.status, 401);
 });
 
-test('a JSON body over 100 KB gets 413, not a 500', { todo: 'Known bug: body-parser errors have no `code`, so server.js turns "entity.too.large" into a 500 Internal server error' }, async () => {
+test('a JSON body over 100 KB gets 413, not a 500', async () => {
   const res = await call(app.url, '/api/auth/register', {
     method: 'POST', headers: XRW, body: { name: 'A', email: 'big@example.edu', password: 'x'.repeat(200_000) }
   });
   assert.equal(res.status, 413);
 });
 
-test('unknown API routes answer with a JSON 404', { todo: 'Known gap: Express returns its default HTML 404 page, so api.js shows "Something went wrong"' }, async () => {
+test('unknown API routes answer with a JSON 404', async () => {
   const res = await call(app.url, '/api/does-not-exist');
   assert.equal(res.status, 404);
   assert.equal(typeof res.body, 'object');
   assert.ok(res.body?.error?.message);
 });
 
-test('students are sent to a page that exists after sign-in', { todo: 'Known bug: index.html redirects students to /student.html, which is not in public/ (404)' }, async () => {
+test('students are sent to a page that exists after sign-in', async () => {
   const res = await fetch(`${app.url}/student.html`);
   assert.equal(res.status, 200);
 });

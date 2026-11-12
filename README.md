@@ -4,6 +4,7 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 
 > **Status (Nov 12, 2026):** merged into `main` so far:
 > - Accounts and security (FR1, NFR1), with the sign-in page and demo seed data (`npm run seed`)
+> - Student page: browse, search and filter, request food and book a pickup (FR2–FR4)
 > - Inventory and donations (FR7)
 > - Pickup times, cancellations and notifications (FR5, FR6)
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
@@ -11,12 +12,11 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 >
 > **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
 >
-> `npm test`: 37 passing (36 unit, 1 integration).
+> Tests: `npm test` runs 221 unit and integration tests (218 pass; 3 are `todo` tests for known FR7 gaps). `npm run test:e2e` runs 34 browser and accessibility tests, all passing.
 >
 > Still to come:
-> - Student page: browse, search and request (FR2–FR4)
 > - Screens for adding items and logging donations (FR7 is API-only so far)
-> - Browser, accessibility and load tests
+> - FR7 API gaps: set a low-stock threshold, per-visit limit or dietary tags when adding an item; retire an item
 >
 > The Development Demo is due **Fri, Nov 13**.
 
@@ -47,7 +47,8 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
    cd University-Food-Pantry-CSE-350-
    npm install
    ```
-3. For browser tests, install Chromium once: `npx playwright install chromium`
+3. Run `npm install` before `npm test` on a fresh clone; the tests need the installed packages.
+4. For browser tests, install Chromium once: `npx playwright install chromium`
 
 The server creates the `data/` folder on first start. Every page should link the shared stylesheet with `<link rel="stylesheet" href="/css/styles.css">`. Use `<main class="narrow">` and `<form class="stack">` for a narrow, stacked form such as sign-in.
 
@@ -84,18 +85,20 @@ src/
 public/
   index.html           sign-in page; sends staff and students to their page
   staff.html           pickup queue, pickup times, low-stock alerts, usage report
+  student.html         student portal: browse, search and filter, request food, book a pickup, notifications
   css/styles.css       shared stylesheet for every page
-  js/                  api.js, ui.js, signout.js, staff-pickups.js, staff-reports.js, student-pickup.js
+  js/                  api.js, ui.js, signout.js, staff-guard.js, staff-pickups.js, staff-reports.js, student-filter.js, student-pickup.js
 tests/
   unit/                one test file per service, router or page script
-  integration/         staff-flow.test.js: book, prepare, complete, report
+  integration/         staff flow, the real server with seed data, server edge cases
+  e2e/                 Playwright browser and accessibility tests (desktop and phone)
+  perf/                autocannon load test
 docs/
   AI_USAGE.md          AI-generated code disclosure
   presentation/        demo deck, recording guide, screenshots, and the team's to-do list
   report/              written report draft
 ```
 
-Not added yet: `public/student.html`, `tests/e2e/`, `tests/perf/`.
 
 ## API
 

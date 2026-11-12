@@ -6,6 +6,8 @@ document.querySelector('#sign-out')?.addEventListener('click', async (event) => 
   event.preventDefault();
   try {
     await api('/api/auth/logout', { method: 'POST' });
+  } catch {
+    // Go to the sign-in page anyway; the session cookie expires on its own.
   } finally {
     window.location.assign('/');
   }

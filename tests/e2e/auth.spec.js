@@ -40,7 +40,6 @@ test.describe('sign-in page', () => {
   });
 
   test('students sign in and land on a working student page', async ({ page, playwright, baseURL }) => {
-    test.fail(true, 'Known bug: index.html sends students to /student.html, which does not exist yet (404)');
     const { email } = await newStudent(playwright, baseURL);
     await signInWithForm(page, { email, password: 'E2ePassword1' });
     await expect(page).toHaveURL(/\/student\.html$/);

@@ -317,8 +317,8 @@ test('Sign out still redirects if the logout request fails', async () => {
   const env = await loadStaffPage({ 'POST /api/auth/logout': [500, { error: { message: 'nope' } }] }, 'signout.js');
   try {
     const { document, window, assigned } = env;
-    // signout.js has try/finally with no catch, so a failed logout redirects and
-    // then leaves an unhandled rejection. Capture it instead of failing the run.
+    // A failed logout still redirects, and signout.js catches the error so
+    // nothing is left as an unhandled rejection.
     const runnerListeners = process.listeners('unhandledRejection');
     process.removeAllListeners('unhandledRejection');
     const leaked = [];
@@ -331,8 +331,7 @@ test('Sign out still redirects if the logout request fails', async () => {
       for (const listener of runnerListeners) process.on('unhandledRejection', listener);
     }
     assert.deepEqual(assigned, ['/']);
-    assert.equal(leaked.length, 1);
-    assert.equal(leaked[0].message, 'nope');
+    assert.equal(leaked.length, 0);
   } finally {
     env.restore();
   }
@@ -340,13 +339,8 @@ test('Sign out still redirects if the logout request fails', async () => {
 
 // ---- student-pickup.js ----
 
-const STUDENT_HTML = `<!doctype html><html><body>
-  <div id="student-item-list"></div>
-  <div id="student-slot-list"></div>
-  <form id="student-pickup-form"><button type="submit">Request</button></form>
-  <div id="student-pickup-message"></div>
-  <ul id="student-notifications"></ul>
-</body></html>`;
+// The real student page (FR2–FR4), so the tests also cover the search and category controls.
+const STUDENT_HTML = 'student.html';
 
 function studentRoutes(overrides = {}) {
   return {
@@ -400,7 +394,7 @@ test('student page shows empty states', async () => {
   }));
   try {
     const { document } = env;
-    assert.equal(text(document.querySelector('#student-item-list')), 'No pantry items are available right now.');
+    assert.equal(text(document.querySelector('#student-item-list')), 'No matching pantry items available.');
     assert.equal(text(document.querySelector('#student-slot-list')), 'No pickup slots are open right now.');
     assert.equal(text(document.querySelector('#student-notifications')), 'No unread notifications.');
   } finally {
@@ -445,7 +439,7 @@ test('student can schedule a pickup', async () => {
 
     const post = calls.find(c => c.method === 'POST' && c.path === '/api/pickups');
     assert.deepEqual(post.body, { slot_id: 10, items: [{ item_id: 1, quantity: 2 }] });
-    assert.equal(text(document.querySelector('#student-pickup-message')), 'Pickup scheduled.');
+    assert.equal(text(document.querySelector('#student-pickup-message')), 'Pickup scheduled. Check your notifications for confirmation.');
     assert.equal(document.querySelector('#student-slot-list button.slot.selected'), null, 'selection clears');
   } finally {
     env.restore();
