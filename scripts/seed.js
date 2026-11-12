@@ -2,6 +2,9 @@ import { mkdirSync, rmSync } from 'node:fs';
 import { openDatabase } from '../src/db.js';
 import { hashPassword } from '../src/auth/passwords.js';
 
+// Same time zone as server.js, so seeded pickup days match the pantry's calendar.
+process.env.TZ ??= 'America/New_York';
+
 const reset = process.argv.includes('--reset');
 
 mkdirSync('data', { recursive: true });

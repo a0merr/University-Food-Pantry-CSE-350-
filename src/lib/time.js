@@ -21,6 +21,8 @@ export function parseLocalIso(text) {
   if (h > 23 || mi > 59 || (s || 0) > 59) return null;
   const date = new Date(y, mo - 1, d, h, mi, s || 0);
   if (date.getFullYear() !== y || date.getMonth() !== mo - 1 || date.getDate() !== d) return null;
+  // A time skipped by daylight saving (e.g. 2:30 AM on spring-forward day) rolls forward; reject it.
+  if (date.getHours() !== h || date.getMinutes() !== mi) return null;
   return date;
 }
 
