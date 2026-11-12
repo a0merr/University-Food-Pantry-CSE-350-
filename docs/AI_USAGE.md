@@ -47,18 +47,19 @@ The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row c
 
 **Correction (Nov 10, 2026):** an earlier version of this file listed Andrew's pickup, notification, alert and report code (FR5, FR6, FR8–FR10) and the staff page as ChatGPT-assisted. Andrew wrote that code by hand, so that entry was removed and the share recounted.
 
-### Recount (Nov 12, 2026, after the bug-fix and stylesheet PR)
+### Recount (Nov 12, 2026, after PRs #21, #22 and #23)
 
-Tracked `.js`, `.html` and `.css` files total 3,935 lines (after Abdullah's sign-in page and seed script, PR #14, and Andrew's Nov 12 changes below).
+Tracked `.js`, `.html` and `.css` files total 7,756 lines, including the tests (after Gavin's QA tests, PR #21; Mohamed's student page, PR #22; and Andrew's fixes).
 
 | What is counted | Lines | Share |
 |---|---:|---:|
-| Claude Code foundation files | 360 | 9.1% |
-| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button, sign-out link, staff account check and QA bug fixes (table below) | 417 | 10.6% |
-| ChatGPT-assisted, Abdullah (same files as above) | 544 | 13.8% |
-| **All AI-generated or AI-assisted** | **1,321** | **33.6%** |
+| Claude Code foundation files | 360 | 4.6% |
+| Claude Code, Andrew, Nov 12: bug fixes, stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes (table below) | 436 | 5.6% |
+| Claude Code, Gavin, Nov 12: QA tests (section below) | 3,700 | 47.7% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 7.0% |
+| **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
 
-Claude Code code in total is 777 lines (19.7%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) are counted as team-written; Abdullah, move them to the ChatGPT row if AI helped. Recount again after the student page is merged.
+Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
 
 ## Claude Code changes, November 12, 2026
 
@@ -81,6 +82,16 @@ Claude Code code in total is 777 lines (19.7%), so the at-least-10% requirement 
 | `public/js/staff-guard.js`, `public/staff.html` | 42 | Issue #19: the staff page re-checks the signed-in account on load and when the tab comes back into view, and explains when the browser is now signed in as a student (all tabs share one sign-in). Starts with the AI-generated marker comment |
 | `server.js`, `scripts/seed.js`, `src/lib/time.js`, `src/services/pickups.js` | 24 | Known bugs from Gavin's QA tests: the server and seed script default to the pantry's time zone (`America/New_York`; Render runs in UTC, which put pickup-time checks, reminders and report dates 5 hours off); unknown `/api` routes answer with a JSON 404; request bodies over 100 KB get 413 instead of 500; a pickup time skipped by daylight saving is rejected; the queue's date filter includes 23:59:59 |
 | `tests/unit/time-and-queue.test.js` | 51 new | Tests for the queue date filter and the daylight-saving check |
+| `public/css/styles.css` | 2 | Student page: the form holding the item grid stacks, so the item cards fill the width instead of one narrow column |
+| `public/js/signout.js` | 2 | Catch a failed logout instead of leaving an unhandled rejection (found by Gavin's tests) |
+| `tests/unit/frontend-pages.test.js`, `tests/unit/edge-and-security.test.js`, `tests/integration/server-edge.test.js`, `tests/e2e/auth.spec.js` | 15 | After PRs #21 and #22 merged: the student-page tests use the real `student.html` and its new messages; the sign-out test expects no leaked error; five known-bug tests that now pass lose their `todo`; the DST tests pin the US Eastern time zone |
+
+## Claude Code: QA tests (Gavin Marvelle, November 12, 2026)
+
+- **Tool:** Claude Code (Anthropic), model Claude Opus 5.5. Both commits in PR #21 (`b3ee47a`, `8b02c1e`) carry a `Co-Authored-By: Claude Opus 5.5` trailer.
+- **Developer:** Gavin Marvelle (QA lead)
+- **Files (3,700 lines):** `playwright.config.js`, `tests/helpers.js`, `tests/server-harness.js`, `tests/e2e/` (accessibility, auth, mobile, staff, `serve.js`, `support.js`), `tests/integration/server.test.js`, `tests/integration/server-edge.test.js`, `tests/perf/load-test.js`, and in `tests/unit/`: `api-routes`, `auth-routes`, `db-and-passwords`, `edge-and-security`, `frontend-core`, `frontend-pages`, `inventory-routes`, `lib`, `services-edge-cases`.
+- **What Gavin did himself:** TO ADD (Gavin): e.g. chose what to test, set the load-test targets, reviewed and ran the tests, logged the issues.
 
 ## Additional AI Assistance — Inventory and Security
 

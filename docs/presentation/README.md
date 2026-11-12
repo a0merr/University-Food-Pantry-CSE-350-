@@ -7,7 +7,7 @@ Everything we hand in on **Friday, November 13**, apart from the code itself. Th
 | [CSE350_Demo_Deck_DRAFT.pptx](CSE350_Demo_Deck_DRAFT.pptx) | The presentation (13 slides, with speaker notes naming who presents each slide) |
 | [RECORDING_GUIDE.md](RECORDING_GUIDE.md) (also [.docx](CSE350_Recording_Guide.docx)) | Who records which slides, what to show on the live site, how to record, and how the clips get combined |
 | [../report/REPORT_DRAFT.md](../report/REPORT_DRAFT.md) (also [.docx](../report/CSE350_Written_Report_DRAFT.docx)) | The written report, in `docs/report/` |
-| [screenshots/](screenshots/) | The sign-in page and the staff page (desktop and phone), taken from `main` with the seed data |
+| [screenshots/](screenshots/) | Sign-in page, staff page and student page (desktop and phone), taken from `main` with the seed data |
 
 The live site is https://university-food-pantry-cse-350.onrender.com. Demo accounts come from `npm run seed`; the passwords are in Abdullah's message in the team chat.
 
@@ -24,14 +24,15 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 - If AI helped with `public/index.html` or `scripts/seed.js`, add them to `docs/AI_USAGE.md`.
 
 **Mohamed**
-- Report section 4.2: the student page, browse, search and requests.
-- Andrew will add the student page screenshot to deck slide 6 once your PR is merged.
+- Report section 4.2: a factual description is in; rewrite it in your own words.
+- If AI helped with the student page, add it to `docs/AI_USAGE.md`.
 
 **Gavin**
-- Deck slides 10–11 and report section 5: test plan, test cases, results (only numbers from real runs) and the Issues you logged.
+- Deck slide 10 and report section 5: your test plan, how you chose what to test, and your load-test results. The test counts and your Issues are already filled in from real runs.
+- `docs/AI_USAGE.md`: fill in "What Gavin did himself" in the QA tests section.
 
 **Andrew**
-- Fill in the recording link, recount the AI share after the last merges, remove the DRAFT labels, and combine the clips.
+- Fill in the recording link, add everyone's lessons learned (slide 13, report section 8), and combine the clips.
 
 ## Editing
 

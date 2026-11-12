@@ -3,6 +3,9 @@
 // SHOULD have. They report as TODO without failing the run; when the bug is
 // fixed they start passing and the todo option can be removed.
 import test from 'node:test';
+
+// The DST tests below use US Eastern dates, so pin the time zone (this file runs in its own process).
+process.env.TZ = 'America/New_York';
 import assert from 'node:assert/strict';
 import express from 'express';
 
@@ -242,7 +245,7 @@ test('reports: the "to" date includes its whole day and "from" starts at midnigh
   }
 });
 
-test('queue date filter includes a pickup at the very last second of the day', { todo: 'Known bug: queue() uses starts_at < "DATET23:59:59", so a 23:59:59 slot is left out' }, () => {
+test('queue date filter includes a pickup at the very last second of the day', () => {
   const db = openDatabase();
   try {
     schedule({ db }, addUser(db), { slot_id: addSlot(db, '2099-05-01T23:59:59'), items: [{ item_id: addItem(db), quantity: 1 }] });
@@ -272,7 +275,7 @@ test('DST fall-back: the repeated 1:30 AM hour is accepted', () => {
   assert.equal(toLocalIso(parseLocalIso('2026-11-01T01:30')), '2026-11-01T01:30:00');
 });
 
-test('DST spring-forward: a slot at a time that does not exist is rejected', { todo: 'Known bug: 2026-03-08T02:30 is silently saved as 03:30 instead of being rejected' }, () => {
+test('DST spring-forward: a slot at a time that does not exist is rejected', () => {
   const db = openDatabase();
   try {
     assert.throws(() => createSlot({ db, clock: fixedClock('2026-01-01T00:00:00') }, { starts_at: '2026-03-08T02:30', capacity: 1 }), { status: 400 });
