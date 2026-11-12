@@ -1,5 +1,5 @@
 import { api } from './api.js';
-import { el, showMessage } from './ui.js';
+import { el, showMessage, STATUS_LABELS } from './ui.js';
 
 const form = document.querySelector('#reports-form');
 const message = document.querySelector('#reports-message');
@@ -44,7 +44,7 @@ async function loadReport(event) {
       metric('Low stock items', inventory.low_stock_items)
     );
     statuses.replaceChildren(rows(report.pickups.status_counts, [
-      { label: 'Status', value: row => row.status },
+      { label: 'Status', value: row => STATUS_LABELS[row.status] ?? row.status },
       { label: 'Pickups', value: row => row.count }
     ]));
     topItems.replaceChildren(rows(report.pickups.top_items, [

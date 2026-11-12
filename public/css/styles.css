@@ -1,0 +1,259 @@
+/* Shared stylesheet for every page. Link it with:
+   <link rel="stylesheet" href="/css/styles.css">
+
+   Part 1 was moved unchanged from the inline <style> in staff.html (Andrew, hand-written).
+   Part 2 is AI-generated (Claude Code) - see docs/AI_USAGE.md */
+
+/* ---------- Part 1: base layout (from staff.html) ---------- */
+
+:root {
+  color-scheme: light;
+  --bg: #f7f9fb;
+  --panel: #ffffff;
+  --ink: #17212b;
+  --muted: #5b6876;
+  --line: #d8e0e8;
+  --accent: #237c70;
+  --danger: #b42318;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+header {
+  background: #15343f;
+  color: #fff;
+  padding: 18px clamp(16px, 4vw, 42px);
+}
+header h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); }
+main {
+  width: min(1180px, calc(100% - 32px));
+  margin: 24px auto 48px;
+  display: grid;
+  gap: 22px;
+}
+section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+h2 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+form, .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+input, select, button {
+  min-height: 40px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  font: inherit;
+}
+button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+button.secondary {
+  background: #eef4f3;
+  color: var(--accent);
+}
+button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border-top: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-size: .86rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.message {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #eaf7f4;
+  color: #155c53;
+  margin-bottom: 12px;
+}
+.message.error {
+  background: #fdecec;
+  color: var(--danger);
+}
+.empty {
+  color: var(--muted);
+  padding: 12px 0;
+}
+@media (max-width: 760px) {
+  table, thead, tbody, tr, th, td { display: block; }
+  thead { display: none; }
+  tr { border-top: 1px solid var(--line); padding: 10px 0; }
+  td { border: 0; padding: 5px 0; }
+  td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 700;
+  }
+}
+
+/* ---------- Part 2: shared additions (AI-generated, Claude Code) ---------- */
+
+/* Header with an optional nav (for example a "Sign out" link). */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+header nav { display: flex; flex-wrap: wrap; gap: 14px; }
+header a { color: #fff; }
+
+h3 {
+  margin: 18px 0 8px;
+  font-size: 1rem;
+}
+.toolbar h2 { margin: 0 auto 0 0; }
+
+/* Keyboard focus is always visible (NFR2). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #f2b705;
+  outline-offset: 2px;
+}
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* Vertical form, e.g. the sign-in form: <form class="stack"> */
+form.stack {
+  display: grid;
+  gap: 12px;
+  align-items: stretch;
+}
+/* Narrow centered page, e.g. the sign-in page: <main class="narrow"> */
+main.narrow { width: min(420px, calc(100% - 32px)); }
+
+/* Status chips from statusChip() in public/js/ui.js */
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 700;
+  background: #eef1f4;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.chip.submitted { background: #fff4d6; color: #7a5200; }
+.chip.scheduled { background: #e3eefc; color: #1d4f91; }
+.chip.prepared { background: #dff3ec; color: #155c53; }
+.chip.picked_up { background: #eef1f4; color: var(--muted); }
+.chip.cancelled { background: #fdecec; color: var(--danger); }
+
+/* Report summary numbers from staff-reports.js */
+#reports-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.metric {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+}
+.metric span { color: var(--muted); font-size: .85rem; }
+.metric strong { font-size: 1.5rem; }
+
+/* Student page: item cards and pickup times from student-pickup.js */
+#student-item-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.pickup-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.pickup-item h3 { margin: 0 0 4px; }
+.pickup-item p { margin: 0; color: var(--muted); font-size: .9rem; }
+.pickup-item input { width: 80px; }
+
+#student-slot-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+button.slot {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+  font-weight: 400;
+}
+button.slot.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Notification list */
+#student-notifications {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#student-notifications li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
