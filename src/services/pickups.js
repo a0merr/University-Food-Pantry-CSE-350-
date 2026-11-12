@@ -240,7 +240,7 @@ export function queue(ctx, filters = {}) {
   const where = [`requests.status IN (${statusParams(statuses)})`];
 
   if (filters.date) {
-    where.push('pickup_slots.starts_at >= ? AND pickup_slots.starts_at < ?');
+    where.push('pickup_slots.starts_at >= ? AND pickup_slots.starts_at <= ?');
     params.push(`${filters.date}T00:00:00`, `${filters.date}T23:59:59`);
   }
 

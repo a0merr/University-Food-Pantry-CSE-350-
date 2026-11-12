@@ -49,16 +49,16 @@ The Claude Code files alone meet the at-least-10% requirement. The ChatGPT row c
 
 ### Recount (Nov 12, 2026, after the bug-fix and stylesheet PR)
 
-Tracked `.js`, `.html` and `.css` files total 3,861 lines (after Abdullah's sign-in page and seed script, PR #14, the sign-out link and the staff page account check).
+Tracked `.js`, `.html` and `.css` files total 3,935 lines (after Abdullah's sign-in page and seed script, PR #14, and Andrew's Nov 12 changes below).
 
 | What is counted | Lines | Share |
 |---|---:|---:|
-| Claude Code foundation files | 360 | 9.3% |
-| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button, sign-out link and staff account check (table below) | 342 | 8.9% |
-| ChatGPT-assisted, Abdullah (same files as above) | 544 | 14.1% |
-| **All AI-generated or AI-assisted** | **1,246** | **32.3%** |
+| Claude Code foundation files | 360 | 9.1% |
+| Claude Code, Nov 12 bug fixes, stylesheet, staff cancel button, sign-out link, staff account check and QA bug fixes (table below) | 417 | 10.6% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 13.8% |
+| **All AI-generated or AI-assisted** | **1,321** | **33.6%** |
 
-Claude Code code in total is 702 lines (18.2%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) are counted as team-written; Abdullah, move them to the ChatGPT row if AI helped. Recount again after the student page is merged.
+Claude Code code in total is 777 lines (19.7%), so the at-least-10% requirement is met. Same upper-bound caveat as above for the ChatGPT row. Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) are counted as team-written; Abdullah, move them to the ChatGPT row if AI helped. Recount again after the student page is merged.
 
 ## Claude Code changes, November 12, 2026
 
@@ -79,6 +79,8 @@ Claude Code code in total is 702 lines (18.2%), so the at-least-10% requirement 
 | `public/js/signout.js`, `public/staff.html` | 14 | Sign-out link in the staff page header; any page can reuse `signout.js` with an `id="sign-out"` link. `signout.js` starts with the AI-generated marker comment |
 | `tests/unit/signout-ui.test.js` | 22 | Checks the staff page's sign-out link and account check |
 | `public/js/staff-guard.js`, `public/staff.html` | 42 | Issue #19: the staff page re-checks the signed-in account on load and when the tab comes back into view, and explains when the browser is now signed in as a student (all tabs share one sign-in). Starts with the AI-generated marker comment |
+| `server.js`, `scripts/seed.js`, `src/lib/time.js`, `src/services/pickups.js` | 24 | Known bugs from Gavin's QA tests: the server and seed script default to the pantry's time zone (`America/New_York`; Render runs in UTC, which put pickup-time checks, reminders and report dates 5 hours off); unknown `/api` routes answer with a JSON 404; request bodies over 100 KB get 413 instead of 500; a pickup time skipped by daylight saving is rejected; the queue's date filter includes 23:59:59 |
+| `tests/unit/time-and-queue.test.js` | 51 new | Tests for the queue date filter and the daylight-saving check |
 
 ## Additional AI Assistance — Inventory and Security
 

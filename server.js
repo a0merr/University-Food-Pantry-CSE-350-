@@ -7,6 +7,11 @@ import { pickupRoutes } from './src/routes/pickups.js';
 import { staffRoutes } from './src/routes/staff.js';
 import { sendDueReminders } from './src/services/reminders.js';
 
+// Pickup times are stored as local time, so the server must run in the pantry's
+// time zone. Hosts like Render default to UTC, which put "is this pickup in the
+// future?", reminders and report dates 5 hours off. Set TZ to override.
+process.env.TZ ??= 'America/New_York';
+
 const app = express();
 
 // Render (and most hosts) end HTTPS at a proxy and forward plain HTTP. Trusting
@@ -66,10 +71,23 @@ app.use('/api/auth', authRoutes(db));
 app.use('/api', inventoryRoutes(db));
 app.use('/api', pickupRoutes(db));
 app.use('/api', staffRoutes(db));
+
+// Unknown API routes get a JSON error like every other API answer, not Express's HTML page.
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: { code: 'not_found', message: 'Not found.' } });
+});
+
 app.use((err, req, res, next) => {
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({
       error: { code: 'bad_request', message: 'Request body is not valid JSON.' }
+    });
+  }
+
+  // Other request-body errors (e.g. "entity.too.large" over 100 KB) carry a 4xx status.
+  if (err.type && err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({
+      error: { code: 'bad_request', message: err.status === 413 ? 'Request body is too large.' : 'Bad request.' }
     });
   }
 
