@@ -387,7 +387,12 @@ We fell behind early because the repository went up late, then caught up by buil
 - **Mohamed Muse, developer.** Built the student portal (FR2–FR4): browsing in-stock items, search and category filtering, requesting food and booking a pickup, and showing notifications. Wrote unit tests for the filters.
 - **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (255 automated tests). Logged Issues #11, #18 and #19 and wrote the test report.
 
-**Lessons learned.** TO ADD (team): one line per person.
+**Lessons learned.**
+
+- **Andrew:** Deploy and test on the live site early. Our two worst bugs, login being blocked on Render and the server clock running five hours off, only showed up once the site was deployed.
+- **Abdullah:** TO ADD
+- **Mohamed:** TO ADD
+- **Gavin:** TO ADD
 
 # 10. Ethical guidelines
 
