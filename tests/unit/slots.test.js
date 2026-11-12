@@ -86,6 +86,22 @@ test('staff cannot lower capacity below booked pickups', () => {
   }
 });
 
+test('slots cannot be moved into the past', () => {
+  const db = openDatabase();
+
+  try {
+    const slot = createSlot({ db, clock }, { starts_at: '2026-11-10T14:00', capacity: 4 });
+
+    assert.throws(
+      () => updateSlot({ db, clock }, slot.id, { starts_at: '2026-11-09T14:00' }),
+      /future/
+    );
+    assert.equal(updateSlot({ db, clock }, slot.id, { capacity: 6 }).capacity, 6);
+  } finally {
+    db.close();
+  }
+});
+
 test('slots with picked-up or cancelled pickups cannot be deleted', () => {
   const db = openDatabase();
 

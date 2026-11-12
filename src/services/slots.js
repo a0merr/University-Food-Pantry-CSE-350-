@@ -114,6 +114,10 @@ export function updateSlot(ctx, slotId, data) {
     ? slot.capacity
     : requireInt(data.capacity, 'Capacity', { min: 1, max: 100 });
 
+  if (data.starts_at !== undefined && parseLocalIso(startsAt) <= (ctx.clock ?? systemClock).now()) {
+    throw badRequest('Pickup slot must be in the future.');
+  }
+
   if (capacity < bookedCount(ctx.db, id)) {
     throw conflict('Capacity cannot be less than scheduled pickups.');
   }

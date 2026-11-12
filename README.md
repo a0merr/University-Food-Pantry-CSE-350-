@@ -9,7 +9,7 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
 > - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself
 >
-> `npm test`: 32 passing (31 unit, 1 integration).
+> `npm test`: 33 passing (32 unit, 1 integration).
 >
 > Still to come:
 > - Sign-in page and student page: browse, search and request (FR2–FR4)

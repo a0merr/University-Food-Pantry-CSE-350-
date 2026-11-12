@@ -67,6 +67,12 @@ app.use('/api', inventoryRoutes(db));
 app.use('/api', pickupRoutes(db));
 app.use('/api', staffRoutes(db));
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({
+      error: { code: 'bad_request', message: 'Request body is not valid JSON.' }
+    });
+  }
+
   if (err.status && err.code) {
     return res.status(err.status).json({
       error: {

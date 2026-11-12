@@ -39,7 +39,8 @@ async function loadQueue() {
             : null,
           pickup.status === 'prepared'
             ? el('button', { type: 'button', onclick: () => updatePickup(pickup.id, 'complete'), text: 'Complete' })
-            : null
+            : null,
+          el('button', { type: 'button', class: 'secondary', onclick: () => cancelPickup(pickup.id), text: 'Cancel' })
         )
       )
     ));
@@ -54,6 +55,17 @@ async function updatePickup(id, action) {
     await api(`/api/staff/pickups/${id}/${action}`, { method: 'POST' });
     await loadQueue();
     showMessage(queueMessage, action === 'prepare' ? 'Pickup marked ready.' : 'Pickup completed.');
+  } catch (err) {
+    showMessage(queueMessage, err.message, 'error');
+  }
+}
+
+// FR6: staff can cancel an open pickup. The server releases the stock and notifies the student.
+async function cancelPickup(id) {
+  try {
+    await api(`/api/pickups/${id}/cancel`, { method: 'POST' });
+    await Promise.all([loadQueue(), loadSlots(), loadAlerts()]);
+    showMessage(queueMessage, 'Pickup cancelled. The student was notified.');
   } catch (err) {
     showMessage(queueMessage, err.message, 'error');
   }
