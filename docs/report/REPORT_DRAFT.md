@@ -43,6 +43,8 @@ There are two kinds of users:
 
 The site is deployed on Render and redeploys automatically when `main` changes. All four team members' work is merged. The only gap is FR7's staff screen: adding items, changing stock and logging donations work through the API, but there is no page for them yet.
 
+Cut from the original plan: staff editing of the per-visit limit (it stays at 8 different items per visit), a "my pickups" list where students could see and cancel their own pickups (students follow their pickup through notifications, and staff cancel from the queue), and a separate student-flow integration test (the student flow is covered by 21 browser tests and the real-server integration tests).
+
 # 4. Test plan
 
 ## 4.1 Test approach
@@ -142,7 +144,7 @@ JavaScript (Node.js 22 or newer, ES modules) on the server and in the browser, H
 
 ## 5.4 Implementation by requirement
 
-**Accounts, roles and security (FR1, NFR1; Abdullah).** The sign-in page (`public/index.html`) signs in through `POST /api/auth/login` and sends staff to the staff page and students to the student page. Passwords are hashed with salted scrypt; only a SHA-256 hash of each session token is stored; session cookies are `HttpOnly` and `SameSite=Lax`, and `Secure` in production; login is limited to 5 failed attempts per 15 minutes; and every change needs the security header and a matching `Origin`. The seed script (`scripts/seed.js`) creates the demo accounts, items and pickup times. A sign-out link ends the session. TO ADD (Abdullah): describe your design in your own words.
+**Accounts, roles and security (FR1, NFR1; Abdullah).** The sign-in page (`public/index.html`) signs in through `POST /api/auth/login` and sends staff to the staff page and students to the student page. Passwords are hashed with salted scrypt; only a SHA-256 hash of each session token is stored; session cookies are `HttpOnly` and `SameSite=Lax`, and `Secure` in production; login is limited to 5 failed attempts per 15 minutes; and every change needs the security header and a matching `Origin`. The seed script (`scripts/seed.js`) creates the demo accounts, items and pickup times. A sign-out link ends the session.
 
 ![Sign-in page](../presentation/screenshots/sign-in.png){ width=55% }
 
@@ -160,7 +162,7 @@ JavaScript (Node.js 22 or newer, ES modules) on the server and in the browser, H
 
 **Usage report (FR10; Andrew).** For a date range: pickups by status, the top ten items (cancelled requests excluded) and stock by category. Counts only, never names or emails; a test checks this.
 
-**Inventory and donations (FR7; Abdullah).** `POST /api/items`, `PATCH /api/items/:id` and `POST /api/donations` add items, change stock and log donations (staff only). There is no staff screen yet, and new items can't yet be given a threshold, limits or tags (open defects #17–#19). TO ADD (Abdullah).
+**Inventory and donations (FR7; Abdullah).** `POST /api/items`, `PATCH /api/items/:id` and `POST /api/donations` add items, change stock and log donations (staff only). There is no staff screen yet, and new items can't yet be given a threshold, limits or tags (open defects #17–#19).
 
 ## 5.5 AI-generated code
 
@@ -201,7 +203,7 @@ All of these are closed. "QA" means found by Gavin's tests or Issues; "E2E" mean
 
 ## 5.7 Deployment and source code
 
-The app runs on Render as a Node web service and redeploys automatically when `main` changes. Render sets the `RENDER` environment variable, which makes the server trust Render's HTTPS proxy. The database is a SQLite file on the server's disk, which Render resets on redeploys, so the demo relies on the seed data. TO ADD (Abdullah): the deploy steps you used.
+The app runs on Render as a Node web service and redeploys automatically when `main` changes. Render sets the `RENDER` environment variable, which makes the server trust Render's HTTPS proxy. The database is a SQLite file on the server's disk, which Render resets on redeploys, so the demo relies on the seed data.
 
 All source files are on GitHub: https://github.com/a0merr/University-Food-Pantry-CSE-350-
 
