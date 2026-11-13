@@ -106,7 +106,7 @@ Claude Code code in total is 4,893 lines (60.0%). Without the tests, the applica
 - **Developer:** Gavin Marvelle (QA lead)
 - **Files (3,700 lines):** `playwright.config.js`, `tests/helpers.js`, `tests/server-harness.js`, `tests/e2e/` (accessibility, auth, mobile, staff, `serve.js`, `support.js`), `tests/integration/server.test.js`, `tests/integration/server-edge.test.js`, `tests/perf/load-test.js`, and in `tests/unit/`: `api-routes`, `auth-routes`, `db-and-passwords`, `edge-and-security`, `frontend-core`, `frontend-pages`, `inventory-routes`, `lib`, `services-edge-cases`.
 - **PR #28 (397 more lines):** the new `tests/e2e/student.spec.js`, plus additions to `tests/e2e/accessibility.spec.js`, `tests/e2e/mobile.spec.js` and `tests/e2e/support.js`. Commit `c5e6745` carries a `Co-Authored-By: Claude Opus 5.5` trailer.
-- **What Gavin did himself:** TO ADD (Gavin): e.g. chose what to test, set the load-test targets, reviewed and ran the tests, logged the issues.
+- **What Gavin did himself:** in his words, "AI was used to check over test cases and to strengthen any code that was written by myself to make sure that all ends were covered when testing took place."
 
 ## AI assistance: Mohamed Muse (student page, PR #22, November 12, 2026)
 

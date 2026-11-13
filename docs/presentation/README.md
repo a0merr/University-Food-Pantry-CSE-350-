@@ -41,7 +41,7 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 - Record clip 05 (slides 11–12). Report section 5.4 and the AI note are in.
 
 **Gavin**
-- Send Andrew your line for "What Gavin did himself" in `docs/AI_USAGE.md`. Clips, criteria, severities and test counts are confirmed.
+- Done: clips, criteria, severities, test counts and his AI_USAGE.md line.
 
 **Andrew**
 - Fill in the recording link (top of the report) and combine the clips.
