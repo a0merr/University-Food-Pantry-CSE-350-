@@ -390,9 +390,9 @@ We fell behind early because the repository went up late, then caught up by buil
 **Lessons learned.**
 
 - **Andrew:** Deploy and test on the live site early. Our two worst bugs, login being blocked on Render and the server clock running five hours off, only showed up once the site was deployed.
-- **Abdullah:** TO ADD
-- **Mohamed:** TO ADD
-- **Gavin:** TO ADD
+- **Abdullah:** The biggest thing I learned was how important it is to test the login system and backend together because even when the code works locally, issues can still come up once everything is deployed.
+- **Mohamed:** The biggest thing I learned was how important it is to test features as you build them, since working on the student portal and its filter tests showed me how small issues can affect the overall functionality and user experience.
+- **Gavin:** The biggest lesson I learned is that effective testing requires more than unit tests; it also takes extensive manual testing, load testing, and close collaboration with developers.
 
 # 10. Ethical guidelines
 
