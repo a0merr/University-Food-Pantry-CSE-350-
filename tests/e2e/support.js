@@ -36,6 +36,23 @@ export async function newStudent(playwright, baseURL, { name = 'E2E Student' } =
   return { api, email, name };
 }
 
+/** Registers a brand-new student and signs the page's browser context in as them. */
+export async function signInAsNewStudent(page, { name = 'E2E Student' } = {}) {
+  const email = uniqueEmail();
+  const res = await page.request.post('/api/auth/register', {
+    data: { name, email, password: 'E2ePassword1' },
+    headers: XRW
+  });
+  expect(res.status(), await res.text()).toBe(201);
+  return { email, name };
+}
+
+/** Items a student can see right now (active and in stock), as the API reports them. */
+export async function inStockItems(request) {
+  const { items } = await (await request.get('/api/items')).json();
+  return items.filter(i => i.active === 1 && i.available > 0);
+}
+
 /** Books the first open slot with one unit of the first item that has stock. */
 export async function bookPickup(api, { itemName } = {}) {
   const { slots } = await (await api.get('/api/pickup-slots')).json();

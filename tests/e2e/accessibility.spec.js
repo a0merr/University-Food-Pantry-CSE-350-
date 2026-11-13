@@ -3,7 +3,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-import { STAFF, signInAs, signInWithForm, newStudent, bookPickup, queueRow } from './support.js';
+import { STAFF, signInAs, signInWithForm, signInAsNewStudent, newStudent, bookPickup, queueRow } from './support.js';
 
 const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
@@ -49,6 +49,40 @@ test.describe('axe scans', () => {
   });
 });
 
+test.describe('axe scans: student page', () => {
+  test.beforeEach(async ({ page }) => {
+    await signInAsNewStudent(page);
+    await page.goto('/student.html');
+    await expect(page.locator('#student-item-list .pickup-item').first()).toBeVisible();
+  });
+
+  test('student page with items, times and notifications loaded', async ({ page }) => {
+    await expectNoViolations(page, 'student (loaded)');
+  });
+
+  test('student page with no search results', async ({ page }) => {
+    await page.getByLabel('Search items').fill('zzz-no-such-food');
+    await expect(page.locator('#student-item-list')).toHaveText('No matching pantry items available.');
+    await expectNoViolations(page, 'student (no results)');
+  });
+
+  test('student page showing a validation error', async ({ page }) => {
+    await page.getByRole('button', { name: 'Request items and book pickup' }).click();
+    await expect(page.locator('#student-pickup-message [role="alert"]')).toBeVisible();
+    await expectNoViolations(page, 'student (error)');
+  });
+
+  test('student page after booking, with a selected time and a notification', async ({ page }) => {
+    const input = page.getByLabel('Pasta quantity', { exact: true });
+    await input.fill('1');
+    await input.dispatchEvent('change');
+    await page.locator('#student-slot-list button.slot').first().click();
+    await page.getByRole('button', { name: 'Request items and book pickup' }).click();
+    await expect(page.locator('#student-notifications')).toContainText('scheduled for');
+    await expectNoViolations(page, 'student (booked)');
+  });
+});
+
 test.describe('keyboard only', () => {
   test('sign in using only the keyboard', async ({ page }) => {
     await page.goto('/');
@@ -80,6 +114,38 @@ test.describe('keyboard only', () => {
     await expect(prepare).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#queue-message')).toHaveText('Pickup marked ready.');
+  });
+
+  test('a student searches, requests food and books a time using only the keyboard', async ({ page }) => {
+    await signInAsNewStudent(page);
+    await page.goto('/student.html');
+    await expect(page.locator('#student-item-list .pickup-item').first()).toBeVisible();
+
+    const tabTo = async (locator) => {
+      for (let i = 0; i < 300; i += 1) {
+        if (await locator.evaluate(el => el === document.activeElement)) return;
+        await page.keyboard.press('Tab');
+      }
+      throw new Error('could not reach the control with Tab');
+    };
+
+    await tabTo(page.getByLabel('Search items'));
+    await page.keyboard.type('oatmeal');
+    await expect(page.locator('#student-item-list .pickup-item')).toHaveCount(1);
+
+    const quantity = page.getByLabel('Oatmeal quantity', { exact: true });
+    await tabTo(quantity);
+    await page.keyboard.press('ArrowUp');
+    await expect(quantity).toHaveValue('1');
+
+    const slot = page.locator('#student-slot-list button.slot').first();
+    await tabTo(slot); // leaving the number field fires its change event
+    await page.keyboard.press('Space');
+    await expect(slot).toHaveAttribute('aria-pressed', 'true');
+
+    await tabTo(page.getByRole('button', { name: 'Request items and book pickup' }));
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#student-pickup-message')).toHaveText(/^Pickup scheduled/);
   });
 
   test('focused controls show a visible focus indicator', async ({ page }) => {
@@ -120,8 +186,9 @@ test.describe('screen reader announcements', () => {
   });
 
   test('pages have a language, a title and one main landmark', async ({ page }) => {
-    for (const path of ['/', '/staff.html']) {
+    for (const path of ['/', '/staff.html', '/student.html']) {
       if (path === '/staff.html') await signInAs(page, STAFF);
+      if (path === '/student.html') await signInAsNewStudent(page);
       await page.goto(path);
       await expect(page.locator('html')).toHaveAttribute('lang', 'en');
       expect((await page.title()).length).toBeGreaterThan(0);
