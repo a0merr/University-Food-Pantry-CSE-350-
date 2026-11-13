@@ -38,9 +38,7 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 - If AI helped with `public/index.html` or `scripts/seed.js`, add them to `docs/AI_USAGE.md`.
 
 **Mohamed**
-- Slides 11–12: check the code slide matches what you built.
-- Report section 5.4 (student page) in your own words.
-- If AI helped with the student page, add it to `docs/AI_USAGE.md`.
+- Record clip 05 (slides 11–12). Report section 5.4 and the AI note are in.
 
 **Gavin**
 - Slides 4–7 and 18–21, and report sections 4, 6 and 7: these were drafted from your tests and today's runs. Check them, adjust the acceptance criteria and defect severities if you disagree, and make them your own.

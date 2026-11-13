@@ -73,7 +73,7 @@ Tracked `.js`, `.html` and `.css` files total 8,153 lines. PR #28 (Gavin's stude
 | ChatGPT-assisted, Abdullah (same files as above) | 544 | 6.7% |
 | **All AI-generated or AI-assisted** | **5,437** | **66.7%** |
 
-Claude Code code in total is 4,893 lines (60.0%). Without the tests, the application code is unchanged: 1,110 of 2,898 lines (38.3%). Gavin's row is the line count of his files (section below) minus the 15 lines Andrew changed in them, which are counted in Andrew's row.
+Claude Code code in total is 4,893 lines (60.0%). Without the tests, the application code is unchanged: 1,110 of 2,898 lines (38.3%). Gavin's row is the line count of his files (section below) minus the 15 lines Andrew changed in them, which are counted in Andrew's row. Mohamed used AI only for ideas and troubleshooting (section below), so his files stay counted as team-written.
 
 ## Claude Code changes, November 12, 2026
 
@@ -107,6 +107,12 @@ Claude Code code in total is 4,893 lines (60.0%). Without the tests, the applica
 - **Files (3,700 lines):** `playwright.config.js`, `tests/helpers.js`, `tests/server-harness.js`, `tests/e2e/` (accessibility, auth, mobile, staff, `serve.js`, `support.js`), `tests/integration/server.test.js`, `tests/integration/server-edge.test.js`, `tests/perf/load-test.js`, and in `tests/unit/`: `api-routes`, `auth-routes`, `db-and-passwords`, `edge-and-security`, `frontend-core`, `frontend-pages`, `inventory-routes`, `lib`, `services-edge-cases`.
 - **PR #28 (397 more lines):** the new `tests/e2e/student.spec.js`, plus additions to `tests/e2e/accessibility.spec.js`, `tests/e2e/mobile.spec.js` and `tests/e2e/support.js`. Commit `c5e6745` carries a `Co-Authored-By: Claude Opus 5.5` trailer.
 - **What Gavin did himself:** TO ADD (Gavin): e.g. chose what to test, set the load-test targets, reviewed and ran the tests, logged the issues.
+
+## AI assistance: Mohamed Muse (student page, PR #22, November 12, 2026)
+
+- **Developer:** Mohamed Muse
+- **Files:** `public/student.html`, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js`, and `tests/unit/student-filter.test.js`
+- **How AI was used:** for ideas and troubleshooting only. No AI-generated code was added, so these files are counted as team-written and the AI share does not change.
 
 ## Additional AI Assistance — Inventory and Security
 

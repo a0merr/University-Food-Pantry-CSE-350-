@@ -148,7 +148,7 @@ JavaScript (Node.js 22 or newer, ES modules) on the server and in the browser, H
 
 ![Sign-in page](../presentation/screenshots/sign-in.png){ width=55% }
 
-**Browse, search and requests (FR2–FR4; Mohamed).** The student page (`public/student.html`) lists only active items that are in stock, with a search box (item name or category) and a category filter (`public/js/student-filter.js`). A student enters quantities, picks an open pickup time and submits. The page sends `POST /api/pickups` and shows the "scheduled" notification, which can be marked read. TO ADD (Mohamed): describe your design in your own words.
+**Browse, search and requests (FR2–FR4; Mohamed).** For FR2–FR4, I developed the student-facing page using HTML and JavaScript, integrating it with the existing backend APIs. The browsing functionality retrieves available pantry items and displays their names, categories, and available quantities. I implemented search and category filtering in JavaScript so students can quickly find specific items without having to scroll through the entire inventory. For food requests, I connected item quantity selection to the existing pickup scheduling system, allowing students to select food, choose a pickup time, and receive confirmation through the notification system. I tested my functionality using six unit tests covering inventory availability, searching, and filtering. All project tests passed with no failures, and I also tested the student flow in the browser by successfully scheduling a pickup and verifying the confirmation notification.
 
 ![Student page after booking a pickup](../presentation/screenshots/student-desktop.png){ width=85% }
 
