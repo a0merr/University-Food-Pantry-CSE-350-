@@ -38,7 +38,7 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 - If AI helped with `public/index.html` or `scripts/seed.js`, add them to `docs/AI_USAGE.md`.
 
 **Mohamed**
-- Record clip 05 (slides 11–12). Report section 5.4 and the AI note are in.
+- Done: clip 05, report section 5.4 and his AI note (ChatGPT, ideas and troubleshooting).
 
 **Gavin**
 - Done: clips, criteria, severities, test counts and his AI_USAGE.md line.

@@ -110,6 +110,7 @@ Claude Code code in total is 4,893 lines (60.0%). Without the tests, the applica
 
 ## AI assistance: Mohamed Muse (student page, PR #22, November 12, 2026)
 
+- **Tool:** ChatGPT (OpenAI)
 - **Developer:** Mohamed Muse
 - **Files:** `public/student.html`, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js`, and `tests/unit/student-filter.test.js`
 - **How AI was used:** for ideas and troubleshooting only. No AI-generated code was added, so these files are counted as team-written and the AI share does not change.
