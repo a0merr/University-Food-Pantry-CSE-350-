@@ -12,7 +12,7 @@ CSE 350, Group 15. Students request food from the campus pantry privately and pi
 >
 > **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
 >
-> Tests: `npm test` runs 221 unit and integration tests (218 pass; 3 are `todo` tests for known FR7 gaps). `npm run test:e2e` runs 34 browser and accessibility tests, all passing.
+> Tests: `npm test` runs 221 unit and integration tests (218 pass; 3 are `todo` tests for known FR7 gaps). `npm run test:e2e` runs 62 browser and accessibility tests, all passing.
 >
 > Still to come:
 > - Screens for adding items and logging donations (FR7 is API-only so far)

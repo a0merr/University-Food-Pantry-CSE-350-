@@ -4,8 +4,6 @@ subtitle: "CSE 350, Group 15 · November 13, 2026"
 author: "Abdullah Saadawi, Mohamed Muse, Andrew Merritt, Gavin Marvelle"
 ---
 
-> **Draft status.** Organized by the Development Demo rubric (sections 1–10). Numbers come from runs on `main` on November 12, 2026. Sections 4, 6 and 7 were drafted from the automated tests for Gavin (QA lead) to review. Remove this note and every **TO ADD** before submitting.
-
 **Live site:** https://university-food-pantry-cse-350.onrender.com
 
 **Source code:** https://github.com/a0merr/University-Food-Pantry-CSE-350-
@@ -64,7 +62,7 @@ To move from testing to deployment:
 |---|---|
 | No critical or high-severity defects remain open | Met (4 open defects, all Medium or Low) |
 | 100% of the 15 critical test cases pass | Met (15 of 15) |
-| At least 95% of all automated tests pass | Met (218 of 221 unit and integration tests, 98.6%; 34 of 34 browser tests) |
+| At least 95% of all automated tests pass | Met (218 of 221 unit and integration tests, 98.6%; 62 of 62 browser tests) |
 | Every requirement is verified by at least one test case | Met (TC_01–TC_15, section 6) |
 | 0 WCAG 2.1 AA accessibility violations | Met |
 | Reads answer within 500 ms (p99) with 50 users | Met; one known slowdown during mass sign-ins (defect #20, Low) |
@@ -91,9 +89,9 @@ TO ADD (Gavin): confirm or adjust these criteria.
 | Requirement | Test cases | Main automated tests (count) |
 |---|---|---|
 | FR1 Accounts and roles | TC_01, TC_02, TC_03 | Sign-in API (14), browser sign-in (9) |
-| FR2 Browse items | TC_04 | Student filter (6), student page (8) |
-| FR3 Search and filter | TC_05 | Student filter (6) |
-| FR4 Food requests | TC_06 | Student page (8), real-server integration (12) |
+| FR2 Browse items | TC_04 | Student filter (6), student page (8), browser student page (21) |
+| FR3 Search and filter | TC_05 | Student filter (6), browser student page (21) |
+| FR4 Food requests | TC_06 | Student page (8), real-server integration (12), browser student page (21) |
 | FR5 Pickup times | TC_07 | Pickup times (6), booking edge cases (31) |
 | FR6 Cancel and notify | TC_08 | Notifications (3), browser staff desk (12) |
 | FR7 Inventory and donations | TC_09 | Inventory API (8), inventory service (3) |
@@ -101,8 +99,8 @@ TO ADD (Gavin): confirm or adjust these criteria.
 | FR9 Low-stock alerts | TC_11 | Alerts (3), browser staff desk (12) |
 | FR10 Usage report | TC_12 | Reports (3), browser staff desk (12) |
 | NFR1 Security | TC_13, TC_14 | Security edge cases (20), server edge cases (8) |
-| Accessibility and phones | TC_15 | Accessibility (10), phone layout (3) |
-| **Total** | **15 test cases** | **221 unit and integration + 34 browser tests** |
+| Accessibility and phones | TC_15 | Accessibility (15), phone layout (5) |
+| **Total** | **15 test cases** | **221 unit and integration + 62 browser tests** |
 
 Counts are the number of tests in each test file; some files cover more than one requirement.
 
@@ -172,13 +170,13 @@ The rubric asks for at least 10% AI-generated code and for it to be mentioned. E
 
 | Source | Lines | Share |
 |---|---:|---:|
-| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 4.6% |
-| Claude Code, Andrew: bug fixes, shared stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes | 436 | 5.6% |
-| Claude Code, Gavin: QA test suite (both commits co-authored by Claude Opus 5.5) | 3,700 | 47.7% |
-| ChatGPT-assisted, Abdullah (inventory and security code; whole files counted) | 544 | 7.0% |
-| **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
+| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 4.4% |
+| Claude Code, Andrew: bug fixes, shared stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes | 436 | 5.3% |
+| Claude Code, Gavin: QA test suite (PRs #21 and #28, co-authored by Claude Opus 5.5) | 4,097 | 50.3% |
+| ChatGPT-assisted, Abdullah (inventory and security code; whole files counted) | 544 | 6.7% |
+| **All AI-generated or AI-assisted** | **5,437** | **66.7%** |
 
-Counted over 7,756 lines of `.js`, `.html` and `.css`, including tests. Without the tests, the application code is 2,898 lines, of which 1,110 (38.3%) are AI-generated or AI-assisted. Both figures are upper bounds, because the ChatGPT row counts whole files.
+Counted over 8,153 lines of `.js`, `.html` and `.css`, including tests. Without the tests, the application code is 2,898 lines, of which 1,110 (38.3%) are AI-generated or AI-assisted. Both figures are upper bounds, because the ChatGPT row counts whole files.
 
 ## 5.6 Bugs raised by testing and how we resolved them
 
@@ -333,7 +331,7 @@ Each test case was verified by the automated tests named under "Verified by", ru
 |---|---:|---:|---:|---:|---|
 | Test cases (section 6) | 15 | 15 | 15 | 0 | |
 | Unit and integration tests (`npm test`) | 221 | 221 | 218 | 0 | 3 `todo` tests record open FR7 defects #17–#19 |
-| Browser and accessibility tests (`npm run test:e2e`) | 34 | 34 | 34 | 0 | Desktop and phone |
+| Browser and accessibility tests (`npm run test:e2e`) | 62 | 62 | 62 | 0 | Desktop and phone |
 | Load scenarios (`npm run test:perf`) | 9 | 9 | 8 | 0 | 1 known issue (defect #20) |
 
 ## 7.2 Load test results
@@ -385,7 +383,7 @@ We fell behind early because the repository went up late, then caught up by buil
 - **Andrew Merritt, project manager and developer.** Planned the sprint and kept the timeline, coordinated the team, and reviewed and merged pull requests. Built pickup times (FR5), cancellations and notifications (FR6), pickup fulfillment (FR8), low-stock alerts (FR9) and the usage report (FR10), plus the staff page and shared styles. Fixed bugs found in testing and put together the deck and this report.
 - **Abdullah Saadawi, developer.** Set up the Express server. Built accounts, sign-in and roles (FR1) and the security measures (NFR1), the inventory and donations API (FR7), the sign-in page and the demo seed data. Deployed the site on Render.
 - **Mohamed Muse, developer.** Built the student portal (FR2–FR4): browsing in-stock items, search and category filtering, requesting food and booking a pickup, and showing notifications. Wrote unit tests for the filters.
-- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (212 of our 255 automated tests, plus the load tests). Logged Issues #11, #18 and #19 and wrote the test report.
+- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (240 of our 283 automated tests, plus the load tests). Logged Issues #11, #18 and #19 and wrote the test report.
 
 **Lessons learned.**
 

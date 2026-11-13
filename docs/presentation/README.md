@@ -31,7 +31,6 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 
 **Everyone**
 - Record your part and send it in the team chat by **Friday 6 PM** (see the recording guide).
-- Send Andrew one line on the biggest thing you learned (slide 25, report section 9).
 
 **Abdullah**
 - Slides 9–10: check the bullets and the code match what you built.
@@ -46,9 +45,10 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 **Gavin**
 - Slides 4–7 and 18–21, and report sections 4, 6 and 7: these were drafted from your tests and today's runs. Check them, adjust the acceptance criteria and defect severities if you disagree, and make them your own.
 - `docs/AI_USAGE.md`: fill in "What Gavin did himself" in the QA tests section.
+- Confirm the test counts after PR #28: 240 of our 283 automated tests are yours (slide 23, report section 9), and there are 62 browser tests (slides 6 and 21, report sections 4.2, 4.5 and 7.1).
 
 **Andrew**
-- Fill in the recording link, add everyone's lessons learned (slide 25, report section 9), and combine the clips.
+- Fill in the recording link (top of the report) and combine the clips.
 
 ## Editing
 
