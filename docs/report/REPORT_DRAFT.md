@@ -399,7 +399,7 @@ We followed the ethical guidelines for computing practice:
 - **Respect for ownership.** We use open-source packages (Express, Playwright, axe-core, autocannon, jsdom) under their licenses, as listed in `package.json`. Our code is MIT-licensed.
 - **Avoiding plagiarism.** Every AI-generated file and change is credited by tool (Claude Code by Anthropic, ChatGPT by OpenAI) in `docs/AI_USAGE.md`, and the AI starter files carry a marker comment. Packages and tools are listed in the references below.
 - **Confidentiality.** Passwords and session tokens are stored only as hashes. The repository holds demo accounts only, with no real student data, and the database file and `.env` are kept out of git. The usage report shows counts, never names or emails.
-- **Promoting diversity and equity.** Requests are private, which reduces the stigma of asking for food. Every page passes WCAG 2.1 AA checks with 0 violations, signing in and running the staff queue were tested with the keyboard alone, and the pages work on phones as well as laptops.
+- **Promoting diversity and equity.** Requests are private, which reduces the stigma of asking for food. Every page passes automated axe-core WCAG 2.1 AA scans with 0 violations, signing in and running the staff queue were tested with the keyboard alone, and the pages work on phones as well as laptops.
 
 # References
 

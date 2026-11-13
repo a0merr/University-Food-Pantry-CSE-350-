@@ -2,13 +2,14 @@
 
 CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
 
-> **Status (Nov 12, 2026):** merged into `main` so far:
+> **Status (Nov 13, 2026):** merged into `main` so far:
 > - Accounts and security (FR1, NFR1), with the sign-in page and demo seed data (`npm run seed`)
 > - Student page: browse, search and filter, request food and book a pickup (FR2–FR4)
 > - Inventory and donations (FR7)
 > - Pickup times, cancellations and notifications (FR5, FR6)
 > - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
 > - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself; sign-out link on the staff page
+> - Browser and accessibility tests for the student page (PR #28)
 >
 > **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
 >

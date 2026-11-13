@@ -138,3 +138,5 @@ These are documents, not source code, so they are not part of the code share abo
 | `docs/presentation/RECORDING_GUIDE.md`, `docs/presentation/CSE350_Recording_Guide.docx` | Drafted the recording plan |
 | `docs/presentation/README.md` | Index of the demo materials and the remaining to-do list |
 | `docs/presentation/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
+
+On November 13 (PR #29), Claude Code also updated the deck, the report and the README at Andrew's request: the team's lessons learned, the test counts and AI share after PR #28, and the speaker notes for Andrew's slides.
