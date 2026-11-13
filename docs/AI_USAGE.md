@@ -61,6 +61,20 @@ Tracked `.js`, `.html` and `.css` files total 7,756 lines, including the tests (
 
 Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
 
+### Recount (Nov 13, 2026, after PR #28)
+
+Tracked `.js`, `.html` and `.css` files total 8,153 lines. PR #28 (Gavin's student-page browser tests) added 400 lines and removed 3, all in `tests/e2e/`: the new `student.spec.js` (279 lines) and additions to `accessibility.spec.js`, `mobile.spec.js` and `support.js`. Its commit carries a `Co-Authored-By: Claude Opus 5.5` trailer. No application code changed.
+
+| What is counted | Lines | Share |
+|---|---:|---:|
+| Claude Code foundation files | 360 | 4.4% |
+| Claude Code, Andrew, Nov 12 (table below) | 436 | 5.3% |
+| Claude Code, Gavin, Nov 12: QA tests, PRs #21 and #28 (section below) | 4,097 | 50.3% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 6.7% |
+| **All AI-generated or AI-assisted** | **5,437** | **66.7%** |
+
+Claude Code code in total is 4,893 lines (60.0%). Without the tests, the application code is unchanged: 1,110 of 2,898 lines (38.3%). Gavin's row is the line count of his files (section below) minus the 15 lines Andrew changed in them, which are counted in Andrew's row. Mohamed used AI only for ideas and troubleshooting (section below), so his files stay counted as team-written.
+
 ## Claude Code changes, November 12, 2026
 
 - **Tool:** Claude Code (Anthropic), model Claude Opus 5.5
@@ -91,7 +105,15 @@ Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requiremen
 - **Tool:** Claude Code (Anthropic), model Claude Opus 5.5. Both commits in PR #21 (`b3ee47a`, `8b02c1e`) carry a `Co-Authored-By: Claude Opus 5.5` trailer.
 - **Developer:** Gavin Marvelle (QA lead)
 - **Files (3,700 lines):** `playwright.config.js`, `tests/helpers.js`, `tests/server-harness.js`, `tests/e2e/` (accessibility, auth, mobile, staff, `serve.js`, `support.js`), `tests/integration/server.test.js`, `tests/integration/server-edge.test.js`, `tests/perf/load-test.js`, and in `tests/unit/`: `api-routes`, `auth-routes`, `db-and-passwords`, `edge-and-security`, `frontend-core`, `frontend-pages`, `inventory-routes`, `lib`, `services-edge-cases`.
-- **What Gavin did himself:** TO ADD (Gavin): e.g. chose what to test, set the load-test targets, reviewed and ran the tests, logged the issues.
+- **PR #28 (397 more lines):** the new `tests/e2e/student.spec.js`, plus additions to `tests/e2e/accessibility.spec.js`, `tests/e2e/mobile.spec.js` and `tests/e2e/support.js`. Commit `c5e6745` carries a `Co-Authored-By: Claude Opus 5.5` trailer.
+- **What Gavin did himself:** in his words, "AI was used to check over test cases and to strengthen any code that was written by myself to make sure that all ends were covered when testing took place."
+
+## AI assistance: Mohamed Muse (student page, PR #22, November 12, 2026)
+
+- **Tool:** ChatGPT (OpenAI)
+- **Developer:** Mohamed Muse
+- **Files:** `public/student.html`, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js`, and `tests/unit/student-filter.test.js`
+- **How AI was used:** for ideas and troubleshooting only. No AI-generated code was added, so these files are counted as team-written and the AI share does not change.
 
 ## Additional AI Assistance — Inventory and Security
 
@@ -123,3 +145,5 @@ These are documents, not source code, so they are not part of the code share abo
 | `docs/presentation/RECORDING_GUIDE.md`, `docs/presentation/CSE350_Recording_Guide.docx` | Drafted the recording plan |
 | `docs/presentation/README.md` | Index of the demo materials and the remaining to-do list |
 | `docs/presentation/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
+
+On November 13 (PR #29), Claude Code also updated the deck, the report and the README at Andrew's request: the team's lessons learned, the test counts and AI share after PR #28, and the speaker notes for Andrew's slides.

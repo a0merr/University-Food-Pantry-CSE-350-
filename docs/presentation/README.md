@@ -31,7 +31,6 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 
 **Everyone**
 - Record your part and send it in the team chat by **Friday 6 PM** (see the recording guide).
-- Send Andrew one line on the biggest thing you learned (slide 25, report section 9).
 
 **Abdullah**
 - Slides 9–10: check the bullets and the code match what you built.
@@ -39,16 +38,13 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 - If AI helped with `public/index.html` or `scripts/seed.js`, add them to `docs/AI_USAGE.md`.
 
 **Mohamed**
-- Slides 11–12: check the code slide matches what you built.
-- Report section 5.4 (student page) in your own words.
-- If AI helped with the student page, add it to `docs/AI_USAGE.md`.
+- Done: clip 05, report section 5.4 and his AI note (ChatGPT, ideas and troubleshooting).
 
 **Gavin**
-- Slides 4–7 and 18–21, and report sections 4, 6 and 7: these were drafted from your tests and today's runs. Check them, adjust the acceptance criteria and defect severities if you disagree, and make them your own.
-- `docs/AI_USAGE.md`: fill in "What Gavin did himself" in the QA tests section.
+- Done: clips, criteria, severities, test counts and his AI_USAGE.md line.
 
 **Andrew**
-- Fill in the recording link, add everyone's lessons learned (slide 25, report section 9), and combine the clips.
+- Fill in the recording link (top of the report) and combine the clips.
 
 ## Editing
 

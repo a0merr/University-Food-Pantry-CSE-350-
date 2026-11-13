@@ -4,8 +4,6 @@ subtitle: "CSE 350, Group 15 · November 13, 2026"
 author: "Abdullah Saadawi, Mohamed Muse, Andrew Merritt, Gavin Marvelle"
 ---
 
-> **Draft status.** Organized by the Development Demo rubric (sections 1–10). Numbers come from runs on `main` on November 12, 2026. Sections 4, 6 and 7 were drafted from the automated tests for Gavin (QA lead) to review. Remove this note and every **TO ADD** before submitting.
-
 **Live site:** https://university-food-pantry-cse-350.onrender.com
 
 **Source code:** https://github.com/a0merr/University-Food-Pantry-CSE-350-
@@ -45,6 +43,8 @@ There are two kinds of users:
 
 The site is deployed on Render and redeploys automatically when `main` changes. All four team members' work is merged. The only gap is FR7's staff screen: adding items, changing stock and logging donations work through the API, but there is no page for them yet.
 
+Cut from the original plan: staff editing of the per-visit limit (it stays at 8 different items per visit), a "my pickups" list where students could see and cancel their own pickups (students follow their pickup through notifications, and staff cancel from the queue), and a separate student-flow integration test (the student flow is covered by 21 browser tests and the real-server integration tests).
+
 # 4. Test plan
 
 ## 4.1 Test approach
@@ -64,12 +64,10 @@ To move from testing to deployment:
 |---|---|
 | No critical or high-severity defects remain open | Met (4 open defects, all Medium or Low) |
 | 100% of the 15 critical test cases pass | Met (15 of 15) |
-| At least 95% of all automated tests pass | Met (218 of 221 unit and integration tests, 98.6%; 34 of 34 browser tests) |
+| At least 95% of all automated tests pass | Met (218 of 221 unit and integration tests, 98.6%; 62 of 62 browser tests) |
 | Every requirement is verified by at least one test case | Met (TC_01–TC_15, section 6) |
 | 0 WCAG 2.1 AA accessibility violations | Met |
 | Reads answer within 500 ms (p99) with 50 users | Met; one known slowdown during mass sign-ins (defect #20, Low) |
-
-TO ADD (Gavin): confirm or adjust these criteria.
 
 ## 4.3 Test environment
 
@@ -91,9 +89,9 @@ TO ADD (Gavin): confirm or adjust these criteria.
 | Requirement | Test cases | Main automated tests (count) |
 |---|---|---|
 | FR1 Accounts and roles | TC_01, TC_02, TC_03 | Sign-in API (14), browser sign-in (9) |
-| FR2 Browse items | TC_04 | Student filter (6), student page (8) |
-| FR3 Search and filter | TC_05 | Student filter (6) |
-| FR4 Food requests | TC_06 | Student page (8), real-server integration (12) |
+| FR2 Browse items | TC_04 | Student filter (6), student page (8), browser student page (21) |
+| FR3 Search and filter | TC_05 | Student filter (6), browser student page (21) |
+| FR4 Food requests | TC_06 | Student page (8), real-server integration (12), browser student page (21) |
 | FR5 Pickup times | TC_07 | Pickup times (6), booking edge cases (31) |
 | FR6 Cancel and notify | TC_08 | Notifications (3), browser staff desk (12) |
 | FR7 Inventory and donations | TC_09 | Inventory API (8), inventory service (3) |
@@ -101,8 +99,8 @@ TO ADD (Gavin): confirm or adjust these criteria.
 | FR9 Low-stock alerts | TC_11 | Alerts (3), browser staff desk (12) |
 | FR10 Usage report | TC_12 | Reports (3), browser staff desk (12) |
 | NFR1 Security | TC_13, TC_14 | Security edge cases (20), server edge cases (8) |
-| Accessibility and phones | TC_15 | Accessibility (10), phone layout (3) |
-| **Total** | **15 test cases** | **221 unit and integration + 34 browser tests** |
+| Accessibility and phones | TC_15 | Accessibility (15), phone layout (5) |
+| **Total** | **15 test cases** | **221 unit and integration + 62 browser tests** |
 
 Counts are the number of tests in each test file; some files cover more than one requirement.
 
@@ -146,11 +144,11 @@ JavaScript (Node.js 22 or newer, ES modules) on the server and in the browser, H
 
 ## 5.4 Implementation by requirement
 
-**Accounts, roles and security (FR1, NFR1; Abdullah).** The sign-in page (`public/index.html`) signs in through `POST /api/auth/login` and sends staff to the staff page and students to the student page. Passwords are hashed with salted scrypt; only a SHA-256 hash of each session token is stored; session cookies are `HttpOnly` and `SameSite=Lax`, and `Secure` in production; login is limited to 5 failed attempts per 15 minutes; and every change needs the security header and a matching `Origin`. The seed script (`scripts/seed.js`) creates the demo accounts, items and pickup times. A sign-out link ends the session. TO ADD (Abdullah): describe your design in your own words.
+**Accounts, roles and security (FR1, NFR1; Abdullah).** The sign-in page (`public/index.html`) signs in through `POST /api/auth/login` and sends staff to the staff page and students to the student page. Passwords are hashed with salted scrypt; only a SHA-256 hash of each session token is stored; session cookies are `HttpOnly` and `SameSite=Lax`, and `Secure` in production; login is limited to 5 failed attempts per 15 minutes; and every change needs the security header and a matching `Origin`. The seed script (`scripts/seed.js`) creates the demo accounts, items and pickup times. A sign-out link ends the session.
 
 ![Sign-in page](../presentation/screenshots/sign-in.png){ width=55% }
 
-**Browse, search and requests (FR2–FR4; Mohamed).** The student page (`public/student.html`) lists only active items that are in stock, with a search box (item name or category) and a category filter (`public/js/student-filter.js`). A student enters quantities, picks an open pickup time and submits. The page sends `POST /api/pickups` and shows the "scheduled" notification, which can be marked read. TO ADD (Mohamed): describe your design in your own words.
+**Browse, search and requests (FR2–FR4; Mohamed).** For FR2–FR4, I developed the student-facing page using HTML and JavaScript, integrating it with the existing backend APIs. The browsing functionality retrieves available pantry items and displays their names, categories, and available quantities. I implemented search and category filtering in JavaScript so students can quickly find specific items without having to scroll through the entire inventory. For food requests, I connected item quantity selection to the existing pickup scheduling system, allowing students to select food, choose a pickup time, and receive confirmation through the notification system. I tested my functionality using six unit tests covering inventory availability, searching, and filtering. All project tests passed with no failures, and I also tested the student flow in the browser by successfully scheduling a pickup and verifying the confirmation notification.
 
 ![Student page after booking a pickup](../presentation/screenshots/student-desktop.png){ width=85% }
 
@@ -164,7 +162,7 @@ JavaScript (Node.js 22 or newer, ES modules) on the server and in the browser, H
 
 **Usage report (FR10; Andrew).** For a date range: pickups by status, the top ten items (cancelled requests excluded) and stock by category. Counts only, never names or emails; a test checks this.
 
-**Inventory and donations (FR7; Abdullah).** `POST /api/items`, `PATCH /api/items/:id` and `POST /api/donations` add items, change stock and log donations (staff only). There is no staff screen yet, and new items can't yet be given a threshold, limits or tags (open defects #17–#19). TO ADD (Abdullah).
+**Inventory and donations (FR7; Abdullah).** `POST /api/items`, `PATCH /api/items/:id` and `POST /api/donations` add items, change stock and log donations (staff only). There is no staff screen yet, and new items can't yet be given a threshold, limits or tags (open defects #17–#19).
 
 ## 5.5 AI-generated code
 
@@ -172,13 +170,13 @@ The rubric asks for at least 10% AI-generated code and for it to be mentioned. E
 
 | Source | Lines | Share |
 |---|---:|---:|
-| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 4.6% |
-| Claude Code, Andrew: bug fixes, shared stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes | 436 | 5.6% |
-| Claude Code, Gavin: QA test suite (both commits co-authored by Claude Opus 5.5) | 3,700 | 47.7% |
-| ChatGPT-assisted, Abdullah (inventory and security code; whole files counted) | 544 | 7.0% |
-| **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
+| Claude Code starter files (database schema, helpers, password hashing, browser helpers) | 360 | 4.4% |
+| Claude Code, Andrew: bug fixes, shared stylesheet, staff cancel button, sign-out link, staff account check, QA bug fixes | 436 | 5.3% |
+| Claude Code, Gavin: QA test suite (PRs #21 and #28, co-authored by Claude Opus 5.5) | 4,097 | 50.3% |
+| ChatGPT-assisted, Abdullah (inventory and security code; whole files counted) | 544 | 6.7% |
+| **All AI-generated or AI-assisted** | **5,437** | **66.7%** |
 
-Counted over 7,756 lines of `.js`, `.html` and `.css`, including tests. Without the tests, the application code is 2,898 lines, of which 1,110 (38.3%) are AI-generated or AI-assisted. Both figures are upper bounds, because the ChatGPT row counts whole files.
+Counted over 8,153 lines of `.js`, `.html` and `.css`, including tests. Without the tests, the application code is 2,898 lines, of which 1,110 (38.3%) are AI-generated or AI-assisted. Both figures are upper bounds, because the ChatGPT row counts whole files.
 
 ## 5.6 Bugs raised by testing and how we resolved them
 
@@ -205,7 +203,7 @@ All of these are closed. "QA" means found by Gavin's tests or Issues; "E2E" mean
 
 ## 5.7 Deployment and source code
 
-The app runs on Render as a Node web service and redeploys automatically when `main` changes. Render sets the `RENDER` environment variable, which makes the server trust Render's HTTPS proxy. The database is a SQLite file on the server's disk, which Render resets on redeploys, so the demo relies on the seed data. TO ADD (Abdullah): the deploy steps you used.
+The app runs on Render as a Node web service and redeploys automatically when `main` changes. Render sets the `RENDER` environment variable, which makes the server trust Render's HTTPS proxy. The database is a SQLite file on the server's disk, which Render resets on redeploys, so the demo relies on the seed data.
 
 All source files are on GitHub: https://github.com/a0merr/University-Food-Pantry-CSE-350-
 
@@ -333,7 +331,7 @@ Each test case was verified by the automated tests named under "Verified by", ru
 |---|---:|---:|---:|---:|---|
 | Test cases (section 6) | 15 | 15 | 15 | 0 | |
 | Unit and integration tests (`npm test`) | 221 | 221 | 218 | 0 | 3 `todo` tests record open FR7 defects #17–#19 |
-| Browser and accessibility tests (`npm run test:e2e`) | 34 | 34 | 34 | 0 | Desktop and phone |
+| Browser and accessibility tests (`npm run test:e2e`) | 62 | 62 | 62 | 0 | Desktop and phone. 62 since PR #28 added the student-page tests; the recorded slides show the Nov 12 run of 34 |
 | Load scenarios (`npm run test:perf`) | 9 | 9 | 8 | 0 | 1 known issue (defect #20) |
 
 ## 7.2 Load test results
@@ -363,8 +361,6 @@ Five seconds per scenario, run on November 12, 2026.
 | 19 | Items can't be retired (hidden from students) | Medium | Open | Abdullah |
 | 20 | Browsing slows (p99 582 ms) while 10 people sign in at once, because password hashing blocks the server | Low | Open | Team |
 
-TO ADD (Gavin): confirm the severities.
-
 # 8. Implementation milestones
 
 | Milestone | Planned | Actual | Status |
@@ -385,14 +381,14 @@ We fell behind early because the repository went up late, then caught up by buil
 - **Andrew Merritt, project manager and developer.** Planned the sprint and kept the timeline, coordinated the team, and reviewed and merged pull requests. Built pickup times (FR5), cancellations and notifications (FR6), pickup fulfillment (FR8), low-stock alerts (FR9) and the usage report (FR10), plus the staff page and shared styles. Fixed bugs found in testing and put together the deck and this report.
 - **Abdullah Saadawi, developer.** Set up the Express server. Built accounts, sign-in and roles (FR1) and the security measures (NFR1), the inventory and donations API (FR7), the sign-in page and the demo seed data. Deployed the site on Render.
 - **Mohamed Muse, developer.** Built the student portal (FR2–FR4): browsing in-stock items, search and category filtering, requesting food and booking a pickup, and showing notifications. Wrote unit tests for the filters.
-- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (255 automated tests). Logged Issues #11, #18 and #19 and wrote the test report.
+- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (240 of our 283 automated tests, plus the load tests). Logged Issues #11, #18 and #19 and wrote the test report.
 
 **Lessons learned.**
 
 - **Andrew:** Deploy and test on the live site early. Our two worst bugs, login being blocked on Render and the server clock running five hours off, only showed up once the site was deployed.
-- **Abdullah:** TO ADD
-- **Mohamed:** TO ADD
-- **Gavin:** TO ADD
+- **Abdullah:** The biggest thing I learned was how important it is to test the login system and backend together because even when the code works locally, issues can still come up once everything is deployed.
+- **Mohamed:** The biggest thing I learned was how important it is to test features as you build them, since working on the student portal and its filter tests showed me how small issues can affect the overall functionality and user experience.
+- **Gavin:** The biggest lesson I learned is that effective testing requires more than unit tests; it also takes extensive manual testing, load testing, and close collaboration with developers.
 
 # 10. Ethical guidelines
 
@@ -401,7 +397,7 @@ We followed the ethical guidelines for computing practice:
 - **Respect for ownership.** We use open-source packages (Express, Playwright, axe-core, autocannon, jsdom) under their licenses, as listed in `package.json`. Our code is MIT-licensed.
 - **Avoiding plagiarism.** Every AI-generated file and change is credited by tool (Claude Code by Anthropic, ChatGPT by OpenAI) in `docs/AI_USAGE.md`, and the AI starter files carry a marker comment. Packages and tools are listed in the references below.
 - **Confidentiality.** Passwords and session tokens are stored only as hashes. The repository holds demo accounts only, with no real student data, and the database file and `.env` are kept out of git. The usage report shows counts, never names or emails.
-- **Promoting diversity and equity.** Requests are private, which reduces the stigma of asking for food. Every page passes WCAG 2.1 AA checks with 0 violations, signing in and running the staff queue were tested with the keyboard alone, and the pages work on phones as well as laptops.
+- **Promoting diversity and equity.** Requests are private, which reduces the stigma of asking for food. Every page passes automated axe-core WCAG 2.1 AA scans with 0 violations, signing in and running the staff queue were tested with the keyboard alone, and the pages work on phones as well as laptops.
 
 # References
 
