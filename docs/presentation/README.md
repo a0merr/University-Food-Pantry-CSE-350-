@@ -1,6 +1,6 @@
 # Development Demo materials
 
-Everything we hand in on **Friday, November 13**, apart from the code itself. The deck and the written report both follow the assignment rubric, sections 1 to 10. Anything marked **TO ADD** is waiting on someone.
+Everything we hand in on **Friday, November 13**, apart from the code itself. The deck and the written report both follow the assignment rubric, sections 1 to 10.
 
 | File | What it is |
 |---|---|
@@ -27,24 +27,9 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 | 10 Ethical guidelines | 1 | 24 | Andrew |
 | Wrap-up and lessons learned | | 25 | Andrew |
 
-## Still to do
+## Status
 
-**Everyone**
-- Record your part and send it in the team chat by **Friday 6 PM** (see the recording guide).
-
-**Abdullah**
-- Slides 9–10: check the bullets and the code match what you built.
-- Report section 5.4 (accounts, security, inventory) in your own words, and section 5.7: the Render deploy steps you used.
-- If AI helped with `public/index.html` or `scripts/seed.js`, add them to `docs/AI_USAGE.md`.
-
-**Mohamed**
-- Done: clip 05, report section 5.4 and his AI note (ChatGPT, ideas and troubleshooting).
-
-**Gavin**
-- Done: clips, criteria, severities, test counts and his AI_USAGE.md line.
-
-**Andrew**
-- Fill in the recording link (top of the report) and combine the clips.
+Everything is done and was submitted on November 13, 2026. All eight parts are recorded and combined into one video (24:21), linked at the top of the written report: https://drive.google.com/file/d/1eYzJMOtO-ii8ReUGqOwY2UhufdKQ50EF/view?usp=sharing
 
 ## Editing
 

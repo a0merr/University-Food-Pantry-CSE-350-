@@ -4,11 +4,11 @@ subtitle: "CSE 350, Group 15 · November 13, 2026"
 author: "Abdullah Saadawi, Mohamed Muse, Andrew Merritt, Gavin Marvelle"
 ---
 
-**Live site:** https://university-food-pantry-cse-350.onrender.com
+**Live site:** https://university-food-pantry-cse-350.onrender.com (Free hosting: if the site is unavailable, or Chrome shows a “Dangerous site” warning, which is a Safe Browsing false positive, run the project locally as in the Appendix. `npm run seed` prints the demo logins.)
 
 **Source code:** https://github.com/a0merr/University-Food-Pantry-CSE-350-
 
-**Recording:** TO ADD (Andrew): recording link
+**Recording:** https://drive.google.com/file/d/1eYzJMOtO-ii8ReUGqOwY2UhufdKQ50EF/view?usp=sharing
 
 # 1. Title
 
