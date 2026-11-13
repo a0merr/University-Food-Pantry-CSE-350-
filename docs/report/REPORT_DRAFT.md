@@ -331,7 +331,7 @@ Each test case was verified by the automated tests named under "Verified by", ru
 |---|---:|---:|---:|---:|---|
 | Test cases (section 6) | 15 | 15 | 15 | 0 | |
 | Unit and integration tests (`npm test`) | 221 | 221 | 218 | 0 | 3 `todo` tests record open FR7 defects #17–#19 |
-| Browser and accessibility tests (`npm run test:e2e`) | 62 | 62 | 62 | 0 | Desktop and phone |
+| Browser and accessibility tests (`npm run test:e2e`) | 62 | 62 | 62 | 0 | Desktop and phone. 62 since PR #28 added the student-page tests; the recorded slides show the Nov 12 run of 34 |
 | Load scenarios (`npm run test:perf`) | 9 | 9 | 8 | 0 | 1 known issue (defect #20) |
 
 ## 7.2 Load test results

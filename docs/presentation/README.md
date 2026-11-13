@@ -45,7 +45,7 @@ The live site is https://university-food-pantry-cse-350.onrender.com. Demo accou
 **Gavin**
 - Slides 4–7 and 18–21, and report sections 4, 6 and 7: these were drafted from your tests and today's runs. Check them, adjust the acceptance criteria and defect severities if you disagree, and make them your own.
 - `docs/AI_USAGE.md`: fill in "What Gavin did himself" in the QA tests section.
-- Confirm the test counts after PR #28: 240 of our 283 automated tests are yours (slide 23, report section 9), and there are 62 browser tests (slides 6 and 21, report sections 4.2, 4.5 and 7.1).
+- Confirm the test counts after PR #28: 240 of our 283 automated tests are yours (report section 9), and there are now 62 browser tests (report sections 4.2, 4.5 and 7.1). Your recorded slides 6 and 21 keep the earlier 34, and report 7.1 explains the difference.
 
 **Andrew**
 - Fill in the recording link (top of the report) and combine the clips.
