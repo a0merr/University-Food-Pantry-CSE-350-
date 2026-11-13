@@ -67,8 +67,6 @@ To move from testing to deployment:
 | 0 WCAG 2.1 AA accessibility violations | Met |
 | Reads answer within 500 ms (p99) with 50 users | Met; one known slowdown during mass sign-ins (defect #20, Low) |
 
-TO ADD (Gavin): confirm or adjust these criteria.
-
 ## 4.3 Test environment
 
 - **Hardware:** team laptops (Windows 11 and macOS).
@@ -360,8 +358,6 @@ Five seconds per scenario, run on November 12, 2026.
 | 18 | New items can't be given a per-visit limit or dietary tags | Medium | Open | Abdullah |
 | 19 | Items can't be retired (hidden from students) | Medium | Open | Abdullah |
 | 20 | Browsing slows (p99 582 ms) while 10 people sign in at once, because password hashing blocks the server | Low | Open | Team |
-
-TO ADD (Gavin): confirm the severities.
 
 # 8. Implementation milestones
 
