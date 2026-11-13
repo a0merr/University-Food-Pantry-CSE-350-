@@ -59,7 +59,7 @@ Tracked `.js`, `.html` and `.css` files total 7,756 lines, including the tests (
 | ChatGPT-assisted, Abdullah (same files as above) | 544 | 7.0% |
 | **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
 
-Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
+Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Mohamed used ChatGPT only for ideas and troubleshooting (section below), so his files stay team-written.
 
 ### Recount (Nov 13, 2026, after PR #28)
 
@@ -141,7 +141,7 @@ These are documents, not source code, so they are not part of the code share abo
 | File | What Claude Code did |
 |---|---|
 | `docs/presentation/CSE350_Demo_Deck_DRAFT.pptx` | Drafted the slide deck from the code on `main`, with screenshots of the running app |
-| `docs/report/REPORT_DRAFT.md`, `docs/report/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; sections marked TO ADD are for each teammate to write |
+| `docs/report/REPORT_DRAFT.md`, `docs/report/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; each teammate wrote or approved their own sections |
 | `docs/presentation/RECORDING_GUIDE.md`, `docs/presentation/CSE350_Recording_Guide.docx` | Drafted the recording plan |
 | `docs/presentation/README.md` | Index of the demo materials and the remaining to-do list |
 | `docs/presentation/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
