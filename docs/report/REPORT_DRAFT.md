@@ -385,7 +385,7 @@ We fell behind early because the repository went up late, then caught up by buil
 - **Andrew Merritt, project manager and developer.** Planned the sprint and kept the timeline, coordinated the team, and reviewed and merged pull requests. Built pickup times (FR5), cancellations and notifications (FR6), pickup fulfillment (FR8), low-stock alerts (FR9) and the usage report (FR10), plus the staff page and shared styles. Fixed bugs found in testing and put together the deck and this report.
 - **Abdullah Saadawi, developer.** Set up the Express server. Built accounts, sign-in and roles (FR1) and the security measures (NFR1), the inventory and donations API (FR7), the sign-in page and the demo seed data. Deployed the site on Render.
 - **Mohamed Muse, developer.** Built the student portal (FR2–FR4): browsing in-stock items, search and category filtering, requesting food and booking a pickup, and showing notifications. Wrote unit tests for the filters.
-- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (255 automated tests). Logged Issues #11, #18 and #19 and wrote the test report.
+- **Gavin Marvelle, QA lead.** Wrote the test plan and test cases. Built the unit, integration, browser, accessibility and load test suites (212 of our 255 automated tests, plus the load tests). Logged Issues #11, #18 and #19 and wrote the test report.
 
 **Lessons learned.**
 
