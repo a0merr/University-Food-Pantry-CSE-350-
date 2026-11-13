@@ -1,7 +1,7 @@
 // Phone-width layout (runs in the mobile-chromium project, Pixel 7 viewport).
 import { test, expect } from '@playwright/test';
 
-import { STAFF, signInAs, newStudent, bookPickup, queueRow } from './support.js';
+import { STAFF, signInAs, signInAsNewStudent, newStudent, bookPickup, queueRow } from './support.js';
 
 async function noSideScroll(page) {
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
@@ -37,4 +37,38 @@ test('queue actions are usable by tap on a phone', async ({ page, playwright, ba
   const row = queueRow(page, student.email);
   await row.getByRole('button', { name: 'Prepare' }).tap();
   await expect(page.locator('#queue-message')).toHaveText('Pickup marked ready.');
+});
+
+test('student page fits a phone screen', async ({ page }) => {
+  await signInAsNewStudent(page);
+  await page.goto('/student.html');
+  await expect(page.locator('#student-item-list .pickup-item').first()).toBeVisible();
+  await noSideScroll(page);
+
+  for (const control of [
+    page.getByLabel('Search items'),
+    page.getByLabel('Category'),
+    page.getByLabel('Rice quantity', { exact: true }),
+    page.locator('#student-slot-list button.slot').first(),
+    page.getByRole('button', { name: 'Request items and book pickup' })
+  ]) {
+    const box = await control.boundingBox();
+    expect(box.height, 'tap target at least 24px tall').toBeGreaterThanOrEqual(24);
+    expect(box.x, 'control starts on screen').toBeGreaterThanOrEqual(0);
+  }
+});
+
+test('a student can request food and book a time by tap on a phone', async ({ page }) => {
+  await signInAsNewStudent(page);
+  await page.goto('/student.html');
+  await page.getByLabel('Search items').tap();
+  await page.getByLabel('Search items').fill('pasta');
+  const quantity = page.getByLabel('Pasta quantity', { exact: true });
+  await quantity.tap();
+  await quantity.fill('1');
+  await quantity.dispatchEvent('change');
+  await page.locator('#student-slot-list button.slot').first().tap();
+  await page.getByRole('button', { name: 'Request items and book pickup' }).tap();
+  await expect(page.locator('#student-pickup-message')).toHaveText(/^Pickup scheduled/);
+  await noSideScroll(page);
 });
