@@ -184,7 +184,8 @@ test.describe('requesting food and booking a pickup (FR4, FR5)', () => {
     await setQuantity(page, 'Rice', 1);
     await slots(page).first().click();
     await page.route('**/api/pickups', async (route) => {
-      await expect(submit(page)).toBeDisabled();
+      // Only the booking POST; the "Your pickup" panel also GETs /api/pickups after booking.
+      if (route.request().method() === 'POST') await expect(submit(page)).toBeDisabled();
       await route.continue();
     });
     await submit(page).click();

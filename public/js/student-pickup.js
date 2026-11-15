@@ -1,6 +1,6 @@
 import { api } from './api.js';
 import { el, formatDateTime, showMessage } from './ui.js';
-import { availableItems, categoriesFor, filterItems } from './student-filter.js';
+import { availableItems, categoriesFor, dietaryTagsFor, filterItems, tagsOf } from './student-filter.js';
 
 const itemList = document.querySelector('#student-item-list');
 const slotList = document.querySelector('#student-slot-list');
@@ -9,14 +9,24 @@ const messageTarget = document.querySelector('#student-pickup-message');
 const notificationList = document.querySelector('#student-notifications');
 const searchInput = document.querySelector('#student-search');
 const categorySelect = document.querySelector('#student-category');
+const dietSelect = document.querySelector('#student-diet');
 const resultCount = document.querySelector('#student-results-count');
 
 let selectedSlotId = null;
 let allItems = [];
 const selectedItems = new Map();
 
+// "gluten-free" -> "Gluten-free"
+const tagLabel = (tag) => tag.charAt(0).toLocaleUpperCase() + tag.slice(1);
+
+/** Most a student can ask for: what is available, capped by the item's per-visit limit (FR4). */
+function maxFor(item) {
+  const available = Math.max(0, Number(item.available));
+  return item.per_visit_limit ? Math.min(available, Number(item.per_visit_limit)) : available;
+}
+
 function quantityControl(item) {
-  const max = Math.max(0, Number(item.available));
+  const max = maxFor(item);
   const input = el('input', {
     type: 'number', min: '0', max: String(max), step: '1',
     value: String(selectedItems.get(item.id) ?? 0),
@@ -35,17 +45,34 @@ function quantityControl(item) {
 }
 
 function renderItems() {
-  const visible = filterItems(allItems, searchInput.value, categorySelect.value);
+  const visible = filterItems(allItems, searchInput.value, categorySelect.value, dietSelect?.value ?? '');
   resultCount.textContent = `${visible.length} available item${visible.length === 1 ? '' : 's'} shown`;
   itemList.replaceChildren(...visible.map(item => el('article', { class: 'pickup-item' },
     el('div', {},
       el('h3', { text: item.name }),
-      el('p', { text: `${item.category} | ${item.available} available` })
+      el('p', { text: `${item.category} | ${item.available} available` }),
+      itemDetails(item)
     ), quantityControl(item)
   )));
   if (!visible.length) {
     itemList.replaceChildren(el('p', { class: 'empty', text: 'No matching pantry items available.' }));
   }
+}
+
+/** Dietary tags and the per-visit limit, when the item has them (FR3, FR4). */
+function itemDetails(item) {
+  const parts = tagsOf(item).map(tagLabel);
+  if (item.per_visit_limit) parts.push(`Limit ${item.per_visit_limit} per visit`);
+  return parts.length ? el('p', { class: 'item-tags', text: parts.join(' · ') }) : null;
+}
+
+function fillDietMenu(items) {
+  if (!dietSelect) return;
+  const previous = dietSelect.value;
+  const tags = dietaryTagsFor(items);
+  dietSelect.replaceChildren(el('option', { value: '', text: 'Any diet' }),
+    ...tags.map(tag => el('option', { value: tag, text: tagLabel(tag) })));
+  if (tags.includes(previous)) dietSelect.value = previous;
 }
 
 async function loadItems() {
@@ -55,6 +82,7 @@ async function loadItems() {
   categorySelect.replaceChildren(el('option', { value: '', text: 'All categories' }),
     ...categoriesFor(items).map(category => el('option', { value: category, text: category })));
   if (categoriesFor(items).includes(previousCategory)) categorySelect.value = previousCategory;
+  fillDietMenu(items);
   const availableIds = new Set(availableItems(items).map(item => item.id));
   for (const id of selectedItems.keys()) if (!availableIds.has(id)) selectedItems.delete(id);
   renderItems();
@@ -120,6 +148,8 @@ async function submitPickup(event) {
     selectedSlotId = null;
     showMessage(messageTarget, 'Pickup scheduled. Check your notifications for confirmation.');
     await Promise.all([loadItems(), loadSlots(), loadNotifications()]);
+    // Lets the "Your pickup" panel (student-mypickup.js) show the new booking.
+    document.dispatchEvent(new Event('pickup-booked'));
   } catch (err) {
     showMessage(messageTarget, err.message, 'error');
   } finally {
@@ -129,6 +159,15 @@ async function submitPickup(event) {
 
 searchInput.addEventListener('input', renderItems);
 categorySelect.addEventListener('change', renderItems);
+dietSelect?.addEventListener('change', renderItems);
+// A cancellation from the "Your pickup" panel returns stock and frees a pickup time.
+document.addEventListener('pickup-cancelled', async () => {
+  try {
+    await Promise.all([loadItems(), loadSlots(), loadNotifications()]);
+  } catch (err) {
+    showMessage(messageTarget, err.message, 'error');
+  }
+});
 requestForm.addEventListener('submit', submitPickup);
 try {
   await Promise.all([loadItems(), loadSlots(), loadNotifications()]);

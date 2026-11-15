@@ -260,6 +260,23 @@ export function queue(ctx, filters = {}) {
   return requests.map((request) => hydrateRequest(ctx.db, request));
 }
 
+/** A student's own open pickups, soonest first (FR6: shown on the student page with Cancel). */
+export function listForStudent(ctx, studentId) {
+  const id = requireId(studentId, 'Student ID');
+  const requests = ctx.db.prepare(`
+    SELECT
+      requests.*,
+      pickup_slots.starts_at
+    FROM requests
+    LEFT JOIN pickup_slots ON pickup_slots.id = requests.slot_id
+    WHERE requests.student_id = ?
+      AND requests.status IN (${statusParams(OPEN_STATUSES)})
+    ORDER BY pickup_slots.starts_at, requests.created_at
+  `).all(id, ...OPEN_STATUSES);
+
+  return requests.map((request) => hydrateRequest(ctx.db, request));
+}
+
 export function prepare(ctx, requestId) {
   const id = requireId(requestId, 'Pickup request ID');
 

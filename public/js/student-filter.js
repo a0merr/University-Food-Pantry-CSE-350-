@@ -8,13 +8,24 @@ export function categoriesFor(items) {
     .sort((a, b) => a.localeCompare(b));
 }
 
-export function filterItems(items, query = '', category = '') {
+// FR3 dietary tags: stored as "vegan, gluten-free".
+export function tagsOf(item) {
+  return String(item.dietary_tags ?? '').split(',').map(tag => tag.trim().toLocaleLowerCase()).filter(Boolean);
+}
+
+export function dietaryTagsFor(items) {
+  return [...new Set(availableItems(items).flatMap(tagsOf))].sort((a, b) => a.localeCompare(b));
+}
+
+export function filterItems(items, query = '', category = '', diet = '') {
   const search = String(query).trim().toLocaleLowerCase();
   const selectedCategory = String(category).trim().toLocaleLowerCase();
+  const selectedDiet = String(diet).trim().toLocaleLowerCase();
   return availableItems(items).filter(item => {
     const name = String(item.name ?? '').toLocaleLowerCase();
     const itemCategory = String(item.category ?? '').toLocaleLowerCase();
     return (!search || name.includes(search) || itemCategory.includes(search)) &&
-      (!selectedCategory || itemCategory === selectedCategory);
+      (!selectedCategory || itemCategory === selectedCategory) &&
+      (!selectedDiet || tagsOf(item).includes(selectedDiet));
   });
 }

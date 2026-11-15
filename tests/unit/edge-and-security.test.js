@@ -284,9 +284,9 @@ test('DST spring-forward: a slot at a time that does not exist is rejected', () 
   }
 });
 
-// ---- FR7 / FR9 gaps in the inventory API ----
+// ---- FR7 / FR9 inventory details (formerly known gaps D-17 to D-19, fixed Nov 15) ----
 
-test('staff can set a low-stock threshold when adding an item (FR9)', { todo: 'Known gap: createItem ignores low_stock_threshold, so API-created items only alert once they hit 0' }, () => {
+test('staff can set a low-stock threshold when adding an item (FR9, D-17)', () => {
   const db = openDatabase();
   try {
     assert.equal(createItem({ db }, { name: 'A', category: 'B', quantity: 1, low_stock_threshold: 5 }).low_stock_threshold, 5);
@@ -295,7 +295,7 @@ test('staff can set a low-stock threshold when adding an item (FR9)', { todo: 'K
   }
 });
 
-test('staff can set a per-visit limit and dietary tags when adding an item (FR7)', { todo: 'Known gap: createItem ignores per_visit_limit and dietary_tags' }, () => {
+test('staff can set a per-visit limit and dietary tags when adding an item (FR7, D-18)', () => {
   const db = openDatabase();
   try {
     const item = createItem({ db }, { name: 'A', category: 'B', quantity: 1, per_visit_limit: 2, dietary_tags: 'vegan' });
@@ -306,7 +306,7 @@ test('staff can set a per-visit limit and dietary tags when adding an item (FR7)
   }
 });
 
-test('staff can retire an item so students no longer see it (FR7)', { todo: 'Known gap: updateItem only changes quantity; there is no way to set active = 0' }, () => {
+test('staff can retire an item so students no longer see it (FR7, D-19)', () => {
   const db = openDatabase();
   try {
     const id = addItem(db, { quantity: 4 });

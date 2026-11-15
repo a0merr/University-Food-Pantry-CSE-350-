@@ -145,5 +145,7 @@ document.querySelector('#refresh-queue').addEventListener('click', loadQueue);
 queueStatus.addEventListener('change', loadQueue);
 slotForm.addEventListener('submit', createSlot);
 document.querySelector('#check-alerts').addEventListener('click', () => loadAlerts({ check: true }));
+// The inventory panel (staff-inventory.js) changed stock or a threshold; the server re-checked alerts.
+document.addEventListener('inventory-changed', () => loadAlerts());
 
 await Promise.all([loadQueue(), loadSlots(), loadAlerts()]);
