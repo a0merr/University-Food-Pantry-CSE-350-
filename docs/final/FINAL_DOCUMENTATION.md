@@ -1139,7 +1139,7 @@ Each test case lists the requirement it verifies, the preconditions, the test da
 | 1 | Open the site | The sign-in page shows labelled Email and Password fields | As expected |
 | 2 | Enter `staff@pantry.demo` | The Email field accepts the address | As expected |
 | 3 | Enter the password | The password is shown as dots | As expected |
-| 4 | Click **Sign In** | The Staff Pickup Desk (`/staff.html`) opens with the queue, pickup times, alerts and report | As expected (Figure 60) |
+| 4 | Click **Sign In** | The Staff Pickup Desk (`/staff.html`) opens with the queue, pickup times, alerts, inventory and report | As expected (top of the page in Figure 60) |
 
 ### TC_02 · FR1: Student sign-in
 
@@ -1548,7 +1548,7 @@ Every change reached `main` through a pull request. The table lists the merged p
 | Member | Merged pull requests | What they contain |
 |---|---|---|
 | Abdullah Saadawi | #1, #2, #3, #4, #14 | Express server and health check; login; inventory and donations with tests; authentication security and CSRF protection; sign-in page and demo seed data |
-| Andrew Merritt | #5–#10, #12, #15–#17, #20, #23–#27, #29, #30, and the branch `andrew/final-fixes` | Pickups, notifications, alerts, reports and the staff page; low-stock triggers; bug fixes and shared stylesheet; sign-out; staff account check (Issue #19); time-zone and QA bug fixes; demo deck, report and README updates |
+| Andrew Merritt | #5–#10, #12, #15–#17, #20, #23–#27, #29–#31, and the branch `andrew/final-fixes` | Pickups, notifications, alerts, reports and the staff page; low-stock triggers; bug fixes and shared stylesheet; sign-out; staff account check (Issue #19); time-zone and QA bug fixes; demo deck, report and README updates |
 | Mohamed Muse | #22 | Student portal: browse, search and filter, request and book (FR2–FR4) |
 | Gavin Marvelle | #21, #28 | Unit, integration, browser, accessibility and load tests; browser tests for the student page. Also logged GitHub Issues #11, #18 and #19 |
 
