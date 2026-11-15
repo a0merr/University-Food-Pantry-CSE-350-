@@ -44,7 +44,8 @@ test.describe('sign-in page', () => {
     await signInWithForm(page, { email, password: 'E2ePassword1' });
     await expect(page).toHaveURL(/\/student\.html$/);
     const res = await page.reload();
-    expect(res.status()).toBe(200);
+    // 304 Not Modified is a successful reload from cache (Firefox does this); the point is no 404.
+    expect([200, 304]).toContain(res.status());
   });
 });
 
