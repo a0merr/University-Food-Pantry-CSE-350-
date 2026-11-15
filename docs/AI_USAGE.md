@@ -59,7 +59,7 @@ Tracked `.js`, `.html` and `.css` files total 7,756 lines, including the tests (
 | ChatGPT-assisted, Abdullah (same files as above) | 544 | 7.0% |
 | **All AI-generated or AI-assisted** | **5,040** | **65.0%** |
 
-Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Abdullah and Mohamed: if AI helped, add a section below and move the lines.
+Claude Code code in total is 4,496 lines (58.0%), so the at-least-10% requirement is met. The ChatGPT row counts whole files, so the total is an upper bound. Counted as team-written: Abdullah's `public/index.html` and `scripts/seed.js` (PR #14) and Mohamed's student page, `public/js/student-filter.js`, his changes to `public/js/student-pickup.js` and `tests/unit/student-filter.test.js` (PR #22); their commits carry no AI attribution. Mohamed used ChatGPT only for ideas and troubleshooting (section below), so his files stay team-written.
 
 ### Recount (Nov 13, 2026, after PR #28)
 
@@ -74,6 +74,46 @@ Tracked `.js`, `.html` and `.css` files total 8,153 lines. PR #28 (Gavin's stude
 | **All AI-generated or AI-assisted** | **5,437** | **66.7%** |
 
 Claude Code code in total is 4,893 lines (60.0%). Without the tests, the application code is unchanged: 1,110 of 2,898 lines (38.3%). Gavin's row is the line count of his files (section below) minus the 15 lines Andrew changed in them, which are counted in Andrew's row. Mohamed used AI only for ideas and troubleshooting (section below), so his files stay counted as team-written.
+
+### Recount (Nov 15, 2026, after the final fixes below)
+
+Tracked `.js`, `.html` and `.css` files total 9,387 lines (application code 3,405; tests 5,982). The November 15 changes added or changed 1,285 lines, all with Claude Code (section "Claude Code changes, November 15, 2026").
+
+| What is counted | Lines | Share |
+|---|---:|---:|
+| Claude Code foundation files | 360 | 3.8% |
+| Claude Code, Andrew, Nov 12 | 436 | 4.6% |
+| Claude Code, Gavin, Nov 12–13: QA tests, PRs #21 and #28 | 4,097 | 43.6% |
+| Claude Code, Andrew, Nov 15: final fixes | 1,285 | 13.7% |
+| ChatGPT-assisted, Abdullah (same files as above) | 544 | 5.8% |
+| **All AI-generated or AI-assisted** | **6,722** | **71.6%** |
+
+Claude Code code in total is 6,178 lines (65.8%). In the application code alone, 1,659 of 3,405 lines (48.7%) are AI-generated or AI-assisted. Both totals are upper bounds: the ChatGPT row counts whole files, and the November 15 row counts every added or changed line, including lines inside files already counted above.
+
+## Claude Code changes, November 15, 2026
+
+- **Tool:** Claude Code (Anthropic), model Claude Opus 5.5
+- **Requested by:** Andrew Merritt
+- **Why:** close the gaps listed in the Development Demo report before the final documentation: open defects D-17 to D-20, the missing FR7 staff screen, the FR3 dietary filter and the FR6 student cancel button
+
+| File | Lines added (removed) | What changed |
+|---|---:|---|
+| `src/services/inventory.js` | 91 (13) | D-17, D-18, D-19: new items take a low-stock threshold, per-visit limit and dietary tags; `updateItem` changes any field that is sent and can retire or restore an item; `normalizeTags()` |
+| `src/routes/inventory.js` | 5 | Re-check low-stock alerts after adding, editing or donating |
+| `src/auth/passwords.js`, `src/auth/routes.js` | 36 (7) | D-20: register and login hash with async `crypto.scrypt`, so sign-ins no longer block other requests; register re-checks the email after hashing |
+| `src/services/pickups.js`, `src/routes/pickups.js` | 23 (1) | FR6: `listForStudent()` and `GET /api/pickups` for a student's own open pickups |
+| `public/js/staff-inventory.js` | 171 new | FR7 staff inventory panel: add, edit, retire and restore items; log donations. Starts with the AI-generated marker comment |
+| `public/js/student-mypickup.js` | 68 new | FR6 "Your pickup" panel with a two-step Cancel. Starts with the AI-generated marker comment |
+| `public/js/student-filter.js`, `public/js/student-pickup.js` | 56 (6) | FR3 dietary menu; tags and per-visit limit on item cards; quantities capped at the limit; events between the two student panels |
+| `public/staff.html`, `public/student.html`, `public/js/staff-pickups.js` | 57 (1) | Inventory section; dietary menu, "Your pickup" section and nav link; alerts refresh after inventory changes |
+| `public/css/styles.css` | 27 | Styles for the new panels |
+| `scripts/seed.js` | 15 (14) | Dietary tags on the demo items; per-visit limits on Peanut Butter (2) and Bottled Water (6) |
+| `tests/unit/inventory-details.test.js`, `tests/unit/final-features-ui.test.js`, `tests/unit/passwords-async.test.js` | 571 new | 28 unit tests for the above, including two sign-ups for the same email at once |
+| `tests/e2e/inventory.spec.js` | 138 new | 4 browser tests, including 2 axe scans |
+| `playwright.browsers.config.js` (and one script in `package.json`) | 15 new | `npm run test:e2e:browsers`: the desktop specs in Firefox and WebKit |
+| `tests/unit/edge-and-security.test.js` | 4 (4) | The three `todo` tests for D-17 to D-19 became real tests |
+| `tests/e2e/student.spec.js`, `tests/e2e/auth.spec.js`, `tests/perf/load-test.js` | 8 (5) | Only the booking POST is intercepted (the page now also GETs `/api/pickups`); a reload may answer 304 in Firefox; comments updated for D-20 |
+| `LICENSE` | new | MIT license, as the README already stated (not code) |
 
 ## Claude Code changes, November 12, 2026
 
@@ -141,9 +181,24 @@ These are documents, not source code, so they are not part of the code share abo
 | File | What Claude Code did |
 |---|---|
 | `docs/presentation/CSE350_Demo_Deck_DRAFT.pptx` | Drafted the slide deck from the code on `main`, with screenshots of the running app |
-| `docs/report/REPORT_DRAFT.md`, `docs/report/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; sections marked TO ADD are for each teammate to write |
+| `docs/report/REPORT_DRAFT.md`, `docs/report/CSE350_Written_Report_DRAFT.docx` | Drafted the written report; each teammate wrote or approved their own sections |
 | `docs/presentation/RECORDING_GUIDE.md`, `docs/presentation/CSE350_Recording_Guide.docx` | Drafted the recording plan |
 | `docs/presentation/README.md` | Index of the demo materials and the remaining to-do list |
 | `docs/presentation/screenshots/` | Screenshots taken in a headless browser from `main` with the seed data |
 
 On November 13 (PR #29), Claude Code also updated the deck, the report and the README at Andrew's request: the team's lessons learned, the test counts and AI share after PR #28, and the speaker notes for Andrew's slides.
+
+## Final documentation drafted with Claude Code (November 15, 2026)
+
+- **Tool:** Claude Code (Anthropic), model Claude Opus 5.5
+- **Requested by:** Andrew Merritt
+
+These are documents, not source code, so they are not part of the code share above. No application or test code was changed.
+
+| File | What Claude Code did |
+|---|---|
+| `docs/final/FINAL_DOCUMENTATION.md`, `docs/final/CSE350_Group15_Final_Documentation.docx`, `docs/final/CSE350_Group15_Final_Documentation.pdf` | Drafted the final team documentation from the Mid-Semester Demo and Development Demo deliverables, the README, this file, the source code and the git history. Teammates' quotations are their own words from the Development Demo report |
+| `docs/final/images/diagrams/` | Drew the diagrams with Mermaid (the layered architecture figure is hand-written HTML) |
+| `docs/final/images/code/` | Rendered code screenshots from `main` and terminal screenshots of the November 15 test runs (`npm test`, `test:coverage`, `test:e2e`, `test:perf` with 50 and 200 users) |
+| `docs/final/images/app/`, `docs/final/images/web/` | Took application screenshots on a freshly seeded local server, and screenshots of the public GitHub pages |
+| `docs/final/images/midsem/` | Rendered the Sprint 2 design slides from the team's Mid-Semester Demo PDF |
