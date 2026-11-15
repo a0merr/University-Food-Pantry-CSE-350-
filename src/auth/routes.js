@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { randomBytes } from 'node:crypto';
 import {
-  hashPassword,
-  verifyPassword,
+  hashPasswordAsync,
+  verifyPasswordAsync,
   sha256,
   DUMMY_HASH
 } from './passwords.js';
@@ -52,7 +52,7 @@ export function authRoutes(db) {
     });
   }
 
-  router.post('/register', (req, res) => {
+  router.post('/register', async (req, res) => {
     const { name, email, password } = req.body ?? {};
 
     if (
@@ -89,13 +89,22 @@ export function authRoutes(db) {
       });
     }
 
+    const passwordHash = await hashPasswordAsync(password);
+
+    // Check again: another request may have registered this email while the hash was computed.
+    if (db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail)) {
+      return res.status(409).json({
+        error: { message: 'An account with this email already exists.' }
+      });
+    }
+
     const result = db.prepare(`
       INSERT INTO users (name, email, password_hash, role, created_at)
       VALUES (?, ?, ?, 'student', ?)
     `).run(
       name.trim(),
       cleanEmail,
-      hashPassword(password),
+      passwordHash,
       new Date().toISOString()
     );
 
@@ -111,7 +120,7 @@ export function authRoutes(db) {
     });
   });
 
-  router.post('/login', checkLoginLimit, (req, res) => {
+  router.post('/login', checkLoginLimit, async (req, res) => {
     const { email, password } = req.body ?? {};
 
     if (typeof email !== 'string' || typeof password !== 'string' ||
@@ -125,7 +134,7 @@ export function authRoutes(db) {
       'SELECT * FROM users WHERE email = ?'
     ).get(email.trim().toLowerCase());
 
-    const valid = verifyPassword(password, user?.password_hash ?? DUMMY_HASH);
+    const valid = await verifyPasswordAsync(password, user?.password_hash ?? DUMMY_HASH);
 
     if (!user || !valid) {
       const ip = req.ip;
