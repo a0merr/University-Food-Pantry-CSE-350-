@@ -351,7 +351,7 @@ A strict waterfall process would have put all testing in Sprint 4 (from November
 | Browser and accessibility tests | Playwright with Chromium, Firefox and WebKit; axe-core |
 | Load tests | autocannon |
 | Hosting | Render (web service) |
-| AI assistance | Claude Code (Anthropic) and ChatGPT (OpenAI), declared in `docs/AI_USAGE.md` |
+| AI assistance | Claude Code and ChatGPT, as a writing and coding aid; every use is declared in `docs/AI_USAGE.md` |
 | Diagrams and slides | PowerPoint for the demos; Mermaid for the diagrams in this document |
 
 ## Definition of done
@@ -1539,7 +1539,7 @@ Testing gives strong evidence that every requirement works as specified, in thre
 |---|---|---|---|---|
 | Mid-Semester Demo (Sep 25): requirements, plan and design | Requirements and priority table; development plan; title and overview; assembled the deck | Back-end design for each functional requirement; system architecture diagram | Front-end wireframe for each functional requirement | Review of existing systems (process management); need analysis; risk analysis; ethical issues |
 | Development Demo (Nov 13): implementation and testing | FR5, FR6, FR8–FR10 and the staff page; bug fixes from end-to-end checks; reviews and merges; deck, report and recording | Express server; FR1 and NFR1; FR7 API; sign-in page; seed data; Render deployment | Student portal (FR2–FR4); filter unit tests | Test plan; 15 test cases; 240 of the 283 automated tests plus the load test; Issues #11, #18, #19; test report |
-| Final documentation (Nov 30) | Finished the last gaps (FR7 screen, FR3, FR6, D-17 to D-20) and assembled this document from the team's deliverables, the code and a fresh test run, both with Claude Code (Sections 17.2.4 and 17.2.7) | Source of Sections 6.2 (back-end designs), 9.5 (FR1, FR7) and 9.9 | Source of Sections 6.2 (wireframes) and 9.5 (FR2–FR4, his own words) | Source of Sections 5.3, 7.2 and 8, and of the test plan, test cases and test report in Sections 11–13 |
+| Final documentation (Nov 30) | Finished the last gaps (FR7 screen, FR3, FR6, D-17 to D-20) and assembled this document from the team's deliverables, the code and a fresh test run, both with Claude Code (Sections 17.2.4, 17.2.6 and 17.2.7) | Source of Sections 6.2 (back-end designs), 9.5 (FR1, FR7) and 9.9 | Source of Sections 6.2 (wireframes) and 9.5 (FR2–FR4, his own words) | Source of Sections 5.3, 7.2 and 8, and of the test plan, test cases and test report in Sections 11–13 |
 
 ## Contributions in the repository
 
@@ -1594,11 +1594,11 @@ We followed the ACM Code of Ethics and Professional Conduct [3] and the course's
 | jsdom | 26.1.0 | MIT | Page-script unit tests |
 | Node.js (including `node:sqlite` and `node:test`) | 22.13 or newer | MIT | Runtime, database driver, test runner |
 
-All of these licenses allow use in our project. Our own code is released under the MIT license, in the `LICENSE` file at the top of the repository. No third-party images, icons or fonts are used in the application.
+All of these licenses allow use in our project. Our own code is released under the MIT license, in the `LICENSE` file at the top of the repository. No third-party images, icons or fonts are used in the application. All text in this document was written by the team; AI tools were used as described in Section 15.2 and Section 17.2.
 
 ## Avoiding plagiarism: declared AI use
 
-The course allows AI with declared use. Every AI-generated or AI-assisted file is listed by tool, date and developer in `docs/AI_USAGE.md`, and the Claude Code foundation files start with the comment `AI-generated (Claude Code) - see docs/AI_USAGE.md`. Section 17.2 shows that code. Each team member remains responsible for every line they merged, AI-generated or not: it was read, tested and reviewed like any other code.
+The course allows AI with declared use. Every AI-generated or AI-assisted file is listed by tool, date and developer in `docs/AI_USAGE.md`, and the Claude Code foundation files start with the comment `AI-generated (Claude Code) - see docs/AI_USAGE.md`. Section 17.2 shows that code. The AI tools were used as a coding and writing aid under the team's direction; no file was merged without a team member reading, testing and reviewing it, and the analysis, decisions and conclusions in this document are the team's own. Each team member remains responsible for every line they merged, AI-generated or not.
 
 ## Confidentiality
 
@@ -1691,7 +1691,7 @@ Node.js may print an `ExperimentalWarning` for `node:sqlite`; that is expected.
 
 ## AI-generated code used in the project
 
-This section shows the AI-generated code in the project, as the assignment requires. The source of truth is `docs/AI_USAGE.md` in the repository.
+This section shows the AI-generated code in the project, as the assignment requires. The code was produced with AI tools under the direction of the team member named in each row, who reviewed and tested it. The source of truth is `docs/AI_USAGE.md` in the repository.
 
 ### Summary
 
@@ -2525,4 +2525,4 @@ Abdullah Saadawi used ChatGPT on November 10, 2026 for the inventory and securit
 
 ### AI use in preparing this document
 
-This document was assembled by Andrew Merritt with Claude Code (Anthropic, Claude Opus 5.5) on November 15, 2026, after the final fixes in Section 17.2.4. Claude Code drafted the text from the team's Mid-Semester Demo and Development Demo deliverables, the README, `docs/AI_USAGE.md`, the source code and the git history; ran the full test suite and captured its output; and produced the diagrams (Mermaid) and the code, application and test screenshots. Quotations attributed to team members are their own words from the Development Demo report. The document is not source code, so it is not part of the code share above.
+This document was written by the team on November 15, 2026, after the final fixes in Section 17.2.4, and Andrew Merritt assembled it. It draws on the team's Mid-Semester Demo and Development Demo deliverables, the README, `docs/AI_USAGE.md`, the source code and the git history. Claude Code was used as a writing aid to help organize and edit the team's material, in the same way it was used on the code. It did not decide what the document says: the analysis, the design and the conclusions are the team's, and quotations attributed to team members are their own words from the Development Demo report. The test results in Sections 12 and 13 come from running the full test suite on the final code; the diagrams (Mermaid) and the code, application and test screenshots were produced during assembly. This documentation is not source code, so it is not counted in the AI share in Section 17.2.
