@@ -35,32 +35,33 @@ for (const [name, email, role, password] of accounts) {
   insertUser.run(name, email, hashPassword(password), role, now);
 }
 
+// [name, category, quantity, low-stock threshold, dietary tags, per-visit limit]
 const items = [
-  ['Rice', 'Grains', 30, 5],
-  ['Pasta', 'Grains', 25, 5],
-  ['Canned Beans', 'Canned Goods', 20, 5],
-  ['Peanut Butter', 'Protein', 12, 5],
-  ['Cereal', 'Breakfast', 18, 5],
-  ['Oatmeal', 'Breakfast', 15, 5],
-  ['Canned Soup', 'Canned Goods', 4, 5],
-  ['Mac and Cheese', 'Meals', 20, 5],
-  ['Granola Bars', 'Snacks', 3, 5],
-  ['Bottled Water', 'Drinks', 40, 10]
+  ['Rice', 'Grains', 30, 5, 'vegan, vegetarian, gluten-free', null],
+  ['Pasta', 'Grains', 25, 5, 'vegan, vegetarian', null],
+  ['Canned Beans', 'Canned Goods', 20, 5, 'vegan, vegetarian, gluten-free', null],
+  ['Peanut Butter', 'Protein', 12, 5, 'vegan, vegetarian, gluten-free', 2],
+  ['Cereal', 'Breakfast', 18, 5, 'vegetarian', null],
+  ['Oatmeal', 'Breakfast', 15, 5, 'vegan, vegetarian', null],
+  ['Canned Soup', 'Canned Goods', 4, 5, '', null],
+  ['Mac and Cheese', 'Meals', 20, 5, 'vegetarian', null],
+  ['Granola Bars', 'Snacks', 3, 5, 'vegetarian', null],
+  ['Bottled Water', 'Drinks', 40, 10, 'vegan, vegetarian, gluten-free', 6]
 ];
 
 const insertItem = db.prepare(`
   INSERT INTO items
-  (name, category, quantity, low_stock_threshold, created_at, updated_at)
-  VALUES (?, ?, ?, ?, ?, ?)
+  (name, category, quantity, low_stock_threshold, dietary_tags, per_visit_limit, created_at, updated_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
-for (const [name, category, quantity, threshold] of items) {
+for (const [name, category, quantity, threshold, tags, limit] of items) {
   const exists = db.prepare(
     'SELECT id FROM items WHERE name = ?'
   ).get(name);
 
   if (!exists) {
-    insertItem.run(name, category, quantity, threshold, now, now);
+    insertItem.run(name, category, quantity, threshold, tags, limit, now, now);
   }
 }
 

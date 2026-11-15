@@ -105,7 +105,7 @@ try {
   }
 
   // Mixed: students browse while a burst of people sign in at the same time.
-  // scryptSync blocks the event loop, so this shows how much sign-ins slow everyone else.
+  // Shows how much password hashing during sign-ins slows everyone else.
   {
     const [browse, signIns] = await Promise.all([
       run({ url: `${server.url}/api/items`, connections: CONNECTIONS }),
@@ -121,8 +121,9 @@ try {
     const problems = [];
     if (browse.errors || browse.timeouts || browse.non2xx) problems.push('errors while browsing');
     if (browse.latency.p99 > limit) problems.push(`browse p99 ${browse.latency.p99}ms > ${limit}ms`);
-    // Known issue: src/auth/passwords.js uses scryptSync, which blocks every other
-    // request while it hashes. Reported, not failed, unless LOAD_STRICT=1.
+    // Defect D-20: login used scryptSync, which blocked every other request while it
+    // hashed. Login now uses async crypto.scrypt. A slow result is still reported as a
+    // known issue rather than a failure, unless LOAD_STRICT=1.
     const known = problems.length > 0 && !process.env.LOAD_STRICT;
     if (problems.length && !known) failed = true;
     rows.push({

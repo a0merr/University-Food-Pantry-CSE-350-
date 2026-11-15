@@ -52,6 +52,50 @@
       <div id="alert-list"></div>
     </section>
 
+    <section aria-labelledby="inventory-title">
+      <h2 id="inventory-title">Inventory</h2>
+      <h3 id="item-form-title">Add an item</h3>
+      <form id="item-form" aria-labelledby="item-form-title">
+        <label>Name
+          <input id="item-name" name="name" maxlength="100" required>
+        </label>
+        <label>Category
+          <input id="item-category" name="category" maxlength="100" required>
+        </label>
+        <label>On shelf
+          <input id="item-quantity" name="quantity" type="number" min="0" max="100000" value="0" required>
+        </label>
+        <label>Low-stock threshold
+          <input id="item-threshold" name="low_stock_threshold" type="number" min="0" max="100000" value="5" required>
+        </label>
+        <label>Per-visit limit
+          <input id="item-limit" name="per_visit_limit" type="number" min="1" max="100" placeholder="No limit">
+        </label>
+        <label>Dietary tags
+          <input id="item-tags" name="dietary_tags" maxlength="200" placeholder="vegan, gluten-free">
+        </label>
+        <button id="item-submit" type="submit">Add Item</button>
+        <button id="item-cancel-edit" type="button" class="secondary" hidden>Cancel Edit</button>
+      </form>
+      <div id="item-message" aria-live="polite"></div>
+      <h3 id="donation-form-title">Log a donation</h3>
+      <form id="donation-form" aria-labelledby="donation-form-title">
+        <label>Item
+          <select id="donation-item" name="item_id" required></select>
+        </label>
+        <label>Quantity donated
+          <input id="donation-quantity" name="quantity" type="number" min="1" max="100000" required>
+        </label>
+        <label>Source (optional)
+          <input id="donation-source" name="source" maxlength="100" placeholder="Campus food drive">
+        </label>
+        <button type="submit">Log Donation</button>
+      </form>
+      <div id="donation-message" aria-live="polite"></div>
+      <h3>Items</h3>
+      <div id="item-list"></div>
+    </section>
+
     <section aria-labelledby="reports-title">
       <h2 id="reports-title">Reports</h2>
       <form id="reports-form">
@@ -75,6 +119,7 @@
   </main>
   <script type="module" src="/js/staff-pickups.js"></script>
   <script type="module" src="/js/staff-reports.js"></script>
+  <script type="module" src="/js/staff-inventory.js"></script>
   <script type="module" src="/js/signout.js"></script>
   <script type="module" src="/js/staff-guard.js"></script>
 </body>

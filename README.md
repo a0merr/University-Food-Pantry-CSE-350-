@@ -2,24 +2,17 @@
 
 CSE 350, Group 15. Students request food from the campus pantry privately and pick a pickup time; pantry staff manage inventory, donations and pickups.
 
-> **Status (Nov 13, 2026):** merged into `main` so far:
+> **Status (Nov 15, 2026):** every requirement is implemented and merged:
 > - Accounts and security (FR1, NFR1), with the sign-in page and demo seed data (`npm run seed`)
-> - Student page: browse, search and filter, request food and book a pickup (FR2–FR4)
-> - Inventory and donations (FR7)
-> - Pickup times, cancellations and notifications (FR5, FR6)
-> - Pickup fulfillment, low-stock alerts and the usage report (FR8–FR10), with the staff page
-> - Shared stylesheet (`public/css/styles.css`); the server creates `data/` itself; sign-out link on the staff page
-> - Browser and accessibility tests for the student page (PR #28)
+> - Student page: browse, search, category and dietary filters, request food, book a pickup, see and cancel your pickup (FR2–FR6)
+> - Staff page: pickup queue, pickup times, low-stock alerts, inventory and donations, usage report (FR5, FR7–FR10)
+> - Login hashes passwords off the main thread, so sign-ins no longer slow other requests (D-20)
 >
-> **Live site:** https://university-food-pantry-cse-350.onrender.com (deployed on Render; demo accounts are created by `scripts/seed.js`)
+> **Live site:** https://university-food-pantry-cse-350.onrender.com (Render). If it is unavailable, run the project locally (see Getting started); `npm run seed` prints the demo logins.
 >
-> Tests: `npm test` runs 221 unit and integration tests (218 pass; 3 are `todo` tests for known FR7 gaps). `npm run test:e2e` runs 62 browser and accessibility tests, all passing.
+> Tests: `npm test` runs 249 unit and integration tests and `npm run test:e2e` runs 66 browser and accessibility tests, all passing. `npm run test:e2e:browsers` runs the desktop browser tests in Firefox and WebKit (Safari's engine).
 >
-> Still to come:
-> - Screens for adding items and logging donations (FR7 is API-only so far)
-> - FR7 API gaps: set a low-stock threshold, per-visit limit or dietary tags when adding an item; retire an item
->
-> The Development Demo is due **Fri, Nov 13**.
+> **Final documentation:** [docs/final/](docs/final/) (due Mon, Nov 30).
 
 ## Team
 
@@ -70,6 +63,7 @@ These are defined in `package.json`. Each one works as soon as the file it runs 
 | `npm run test:integration` | Integration tests only | `tests/integration/` |
 | `npm run test:coverage` | Tests with a coverage report for `src/` | as above |
 | `npm run test:e2e` | Browser and accessibility tests | `playwright.config.js`, `tests/e2e/` |
+| `npm run test:e2e:browsers` | The desktop browser tests in Firefox and WebKit (run `npx playwright install firefox webkit` once) | `playwright.browsers.config.js` |
 | `npm run test:perf` | Load test | `tests/perf/load-test.js` |
 | `npm run test:all` | All of the above | everything |
 
@@ -85,10 +79,11 @@ src/
   services/            inventory, slots, pickups, notifications, reminders, alerts, reports
 public/
   index.html           sign-in page; sends staff and students to their page
-  staff.html           pickup queue, pickup times, low-stock alerts, usage report
-  student.html         student portal: browse, search and filter, request food, book a pickup, notifications
+  staff.html           pickup queue, pickup times, low-stock alerts, inventory and donations, usage report
+  student.html         student portal: browse, search and filter, request food, book a pickup, your pickup, notifications
   css/styles.css       shared stylesheet for every page
-  js/                  api.js, ui.js, signout.js, staff-guard.js, staff-pickups.js, staff-reports.js, student-filter.js, student-pickup.js
+  js/                  api.js, ui.js, signout.js, staff-guard.js, staff-pickups.js, staff-reports.js, staff-inventory.js,
+                       student-filter.js, student-pickup.js, student-mypickup.js
 tests/
   unit/                one test file per service, router or page script
   integration/         staff flow, the real server with seed data, server edge cases
@@ -110,9 +105,10 @@ Every route is under `/api`. A `POST`, `PATCH` or `DELETE` needs the `X-Requeste
 | `GET /health` | anyone | Server check | Abdullah |
 | `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` | anyone / signed in | Accounts and sessions | Abdullah |
 | `GET /items` | anyone | Item list with stock | Abdullah |
-| `POST /items`, `PATCH /items/:id`, `POST /donations` | staff | Add items, change quantity, log donations | Abdullah |
+| `POST /items`, `PATCH /items/:id`, `POST /donations` | staff | Add items with a low-stock threshold, per-visit limit and dietary tags; change any of an item's details or retire it (`{ "active": false }`); log donations. Each one re-checks low-stock alerts | Abdullah |
 | `GET /pickup-slots` | signed in | Pickup times with open spots | Andrew |
 | `POST /pickups` | student | Body `{ slot_id, items: [{ item_id, quantity }] }`. Checks the visit and per-item limits, reserves stock, books the time and sends a "scheduled" notification | Andrew |
+| `GET /pickups` | student | The student's own open pickups, soonest first | Andrew |
 | `GET /pickups/:id`, `POST /pickups/:id/cancel` | owner or staff | View or cancel a pickup; cancel releases reserved stock | Andrew |
 | `GET /notifications`, `PATCH /notifications/:id/read` | signed in | Own notifications; `?unread=true` filters | Andrew |
 | `GET /staff/pickups` | staff | Pickup queue; `?date=YYYY-MM-DD`, `?status=` | Andrew |

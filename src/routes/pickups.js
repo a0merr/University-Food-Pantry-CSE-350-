@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { sha256 } from '../auth/passwords.js';
 import { badRequest, forbidden, unauthorized } from '../lib/errors.js';
 import { checkLowStock } from '../services/alerts.js';
-import { cancel, getPickup, schedule } from '../services/pickups.js';
+import { cancel, getPickup, listForStudent, schedule } from '../services/pickups.js';
 import { listSlots } from '../services/slots.js';
 import { listNotifications, markRead, notifyCancelled, notifyScheduled } from '../services/notifications.js';
 
@@ -60,6 +60,11 @@ export function pickupRoutes(db) {
     notifyScheduled({ db }, pickup);
     checkLowStock({ db });
     res.status(201).json({ pickup });
+  });
+
+  // FR6: a student's own open pickups, so the student page can show them with a Cancel button.
+  router.get('/pickups', requireSignedIn, requireStudent, (req, res) => {
+    res.json({ pickups: listForStudent({ db }, req.user.id) });
   });
 
   router.get('/pickups/:id', requireSignedIn, (req, res) => {

@@ -7,6 +7,7 @@ import {
   updateItem,
   recordDonation
 } from '../services/inventory.js';
+import { checkLowStock } from '../services/alerts.js';
 
 export function inventoryRoutes(db) {
   const router = Router();
@@ -49,6 +50,7 @@ export function inventoryRoutes(db) {
 
   router.post('/items', requireStaff, (req, res) => {
     const item = createItem({ db }, req.body ?? {});
+    checkLowStock({ db });
     res.status(201).json({ item });
   });
 
@@ -60,6 +62,8 @@ export function inventoryRoutes(db) {
     }
 
     const item = updateItem({ db }, id, req.body ?? {});
+    // A new quantity or threshold, or retiring an item, can open or close a low-stock alert (FR9).
+    checkLowStock({ db });
     res.json({ item });
   });
 
@@ -69,6 +73,7 @@ export function inventoryRoutes(db) {
       logged_by: req.user.id
     });
 
+    checkLowStock({ db });
     res.status(201).json({ item });
   });
 

@@ -259,3 +259,30 @@ button.slot.selected {
   padding: 10px 0;
   border-top: 1px solid var(--line);
 }
+
+/* Student page: dietary tags and per-visit limit on item cards (FR3, FR4) */
+.pickup-item p.item-tags {
+  margin-top: 4px;
+  font-size: .82rem;
+  color: #3f5f2f;
+}
+
+/* Student page: "Your pickup" panel from student-mypickup.js (FR6) */
+.my-pickup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.my-pickup h3 { margin: 0 0 4px; }
+.my-pickup p { margin: 0 0 8px; color: var(--muted); }
+.my-pickup .actions { flex-direction: column; align-items: flex-end; }
+.my-pickup .hint { margin: 0; max-width: 300px; font-size: .85rem; text-align: right; }
+
+/* Staff page: inventory table from staff-inventory.js (FR7) */
+#item-list tr.retired td { color: var(--muted); }
+#item-list td:nth-child(n+4):nth-child(-n+8) { white-space: nowrap; }

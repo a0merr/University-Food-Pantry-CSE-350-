@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>University Food Pantry — Student Portal</h1>
-    <nav><a href="#browse">Browse food</a><a href="#pickup">Book pickup</a><a href="#notifications">Notifications</a><a href="/" id="sign-out">Sign out</a></nav>
+    <nav><a href="#browse">Browse food</a><a href="#pickup">Book pickup</a><a href="#my-pickup">My pickup</a><a href="#notifications">Notifications</a><a href="/" id="sign-out">Sign out</a></nav>
   </header>
   <main>
     <section id="browse" aria-labelledby="browse-title">
@@ -21,6 +21,9 @@
         </label>
         <label for="student-category">Category
           <select id="student-category"><option value="">All categories</option></select>
+        </label>
+        <label for="student-diet">Dietary
+          <select id="student-diet"><option value="">Any diet</option></select>
         </label>
       </div>
       <p id="student-results-count" role="status" aria-live="polite"></p>
@@ -34,12 +37,18 @@
       </form>
       <div id="student-pickup-message" aria-live="polite"></div>
     </section>
+    <section id="my-pickup" aria-labelledby="my-pickup-title">
+      <h2 id="my-pickup-title">Your pickup</h2>
+      <div id="my-pickup-message" aria-live="polite"></div>
+      <div id="my-pickup-list"></div>
+    </section>
     <section id="notifications" aria-labelledby="notifications-title">
       <h2 id="notifications-title">Notifications</h2>
       <ul id="student-notifications"></ul>
     </section>
   </main>
   <script type="module" src="/js/student-pickup.js"></script>
+  <script type="module" src="/js/student-mypickup.js"></script>
   <script type="module" src="/js/signout.js"></script>
 </body>
 </html>
