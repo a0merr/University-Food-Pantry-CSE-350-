@@ -1617,7 +1617,7 @@ Requests are private, which reduces the stigma of asking for food. Dietary tags 
 | Development Demo recording | https://drive.google.com/file/d/1eYzJMOtO-ii8ReUGqOwY2UhufdKQ50EF/view?usp=sharing |
 | Visibility | Public |
 | Main branch | `main` |
-| History | 86 commits, 26 merged pull requests and 3 closed issues as of November 13, 2026; the final fixes of November 15 are on the branch `andrew/final-fixes` until it is merged into `main` |
+| History | 86 commits, 26 merged pull requests and 3 closed issues as of November 13, 2026; the November 15 final fixes (branch `andrew/final-fixes`) were merged into `main` in pull request #32 |
 | AI usage log | `docs/AI_USAGE.md` |
 | This document | `docs/final/` |
 
